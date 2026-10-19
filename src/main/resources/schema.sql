@@ -1,47 +1,76 @@
-CREATE TABLE usuario
-(
-    idUsuario INT AUTO_INCREMENT PRIMARY KEY,
-    nomeCompleto      VARCHAR(100) NOT NULL,
-    email     VARCHAR(100) NOT NULL UNIQUE,
-    senha     VARCHAR(20)  NOT NULL,
-    telefone  CHAR(11),
-    pontos    INT          NOT NULL DEFAULT 0
-);
+CREATE TABLE IF NOT EXISTS `categoria` (
+    `idCategoria` INT NOT NULL AUTO_INCREMENT,
+    `nome` VARCHAR(45) NOT NULL,
+    `descricao` VARCHAR(255) NULL,
+    PRIMARY KEY (`idCategoria`)
+    )
 
-CREATE TABLE beneficio
-(
-    idBeneficio INT AUTO_INCREMENT PRIMARY KEY,
-    nome        VARCHAR(100) NOT NULL,
-    descricao   VARCHAR(255),
-    custo       INT          NOT NULL
-);
+CREATE TABLE IF NOT EXISTS `produto` (
+    `idProduto` INT NOT NULL AUTO_INCREMENT,
+    `nome` VARCHAR(100) NOT NULL,
+    `descricao` VARCHAR(255) NULL,
+    `preco` DECIMAL(5,2) NOT NULL,
+    `imagem_url` VARCHAR(255) NULL,
+    `disponivel` TINYINT NULL,
+    `fk_categoria` INT NOT NULL,
+    PRIMARY KEY (`idProduto`),
+    CONSTRAINT `fk_produto_categoria`
+    FOREIGN KEY (`fk_categoria`)
+    REFERENCES `categoria` (`idCategoria`)
+    )
 
-CREATE TABLE compra
-(
-    idCompra           INT AUTO_INCREMENT PRIMARY KEY,
-    codigo_nota_fiscal CHAR(44)       NOT NULL UNIQUE,
-    valor              DECIMAL(10, 2) NOT NULL,
-    data_compra        TIMESTAMP      NOT NULL,
-    fk_usuario         INT            NOT NULL,
-    CONSTRAINT fk_compra_usuario
-        FOREIGN KEY (fk_usuario) REFERENCES usuario (idUsuario)
-);
+CREATE TABLE IF NOT EXISTS `usuario` (
+    `idUsuario` INT NOT NULL AUTO_INCREMENT,
+    `nome` VARCHAR(100) NOT NULL,
+    `email` VARCHAR(100) NOT NULL,
+    `senha` VARCHAR(255) NOT NULL,
+    `telefone` CHAR(11) NULL,
+    `criado_em` DATETIME NULL,
+    `atualizado_em` DATETIME NULL,
+    `status_usuario` TINYINT NULL,
+    `funcao` TINYINT(3) NULL,
+    `dt_nasc` DATE NULL,
+    `cidade` VARCHAR(100) NULL,
+    `selos` INT,
+    PRIMARY KEY (`idUsuario`)
+    )
 
-CREATE TABLE resgate
-(
-    idResgate      INT         NOT NULL,
-    custo          INT         NOT NULL,
-    data_conquista TIMESTAMP   NOT NULL,
-    data_resgate   TIMESTAMP,
-    fk_usuario     INT         NOT NULL,
-    fk_beneficio   INT         NOT NULL,
-    status         VARCHAR(45) NOT NULL,
-    CONSTRAINT pk_resgate
-        PRIMARY KEY (idResgate, fk_usuario, fk_beneficio),
-    CONSTRAINT fk_resgate_usuario
-        FOREIGN KEY (fk_usuario)
-            REFERENCES usuario (idUsuario),
-    CONSTRAINT fk_resgate_beneficio
-        FOREIGN KEY (fk_beneficio)
-            REFERENCES beneficio (idBeneficio)
-);
+CREATE TABLE IF NOT EXISTS `feedback` (
+    `idFeedback` INT NOT NULL AUTO_INCREMENT,
+    `nota` INT NULL,
+    `comentario` VARCHAR(255) NULL,
+    `data_hora` DATETIME NULL,
+    `fk_usuario` INT NOT NULL,
+    PRIMARY KEY (`idFeedback`),
+    CONSTRAINT `fk_feedback_usuario`
+    FOREIGN KEY (`fk_usuario`)
+    REFERENCES `usuario` (`idUsuario`)
+    )
+
+CREATE TABLE IF NOT EXISTS `resgate` (
+    `idResgate` INT NOT NULL AUTO_INCREMENT,
+    `data_resgate` DATETIME NULL,
+    `usuario_idUsuario` INT NOT NULL,
+    PRIMARY KEY (`idResgate`),
+    CONSTRAINT `fk_resgate_usuario`
+    FOREIGN KEY (`usuario_idUsuario`)
+    REFERENCES `usuario` (`idUsuario`)
+    )
+
+CREATE TABLE IF NOT EXIST Codigo (
+     idCodigo INT AUTO_INCREMENT PRIMARY KEY,
+     codigo CHAR(6) NOT NULL,
+     statusScan TINYINT
+    )
+
+CREATE TABLE IF NOT EXIST resgate_selo (
+      Codigo_idCodigo INT,
+      usuario_idUsuario INT,
+      valor DECIMAL(5,2),
+      data_hora DATETIME,
+      PRIMARY KEY (Codigo_idCodigo, usuario_idUsuario),
+      CONSTRAINT fk_resgate_selo_codigo FOREIGN KEY (Codigo_idCodigo)
+          REFERENCES Codigo(idCodigo),
+      CONSTRAINT fk_resgate_selo_usuario FOREIGN KEY (usuario_idUsuario)
+          REFERENCES usuario(idUsuario)
+    )
