@@ -1,16 +1,19 @@
 -- Dados de teste para desenvolvimento local.
 -- As senhas abaixo estão armazenadas com BCrypt, compatível com BCryptPasswordEncoder.
 
+-- Senha em texto puro para login de teste: Marley123!
 INSERT INTO usuario (nome, email, senha, telefone, criado_em, atualizado_em, status_usuario, funcao, dt_nasc, cidade, regiao, selos)
 SELECT 'Marley', 'marley@hachi.test', '$2a$10$VTtyfYH5jn7l2QE7acC6mOlYMhUO7lJBWL02YGYRYa2DfmTAhGDVC',
        '11987654321', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 0, DATE '2000-05-15', 'São Paulo', 'Centro', 0
 WHERE NOT EXISTS (SELECT 1 FROM usuario WHERE LOWER(email) = 'marley@hachi.test');
 
+-- Senha em texto puro para login de teste: Julia123!
 INSERT INTO usuario (nome, email, senha, telefone, criado_em, atualizado_em, status_usuario, funcao, dt_nasc, cidade, regiao, selos)
 SELECT 'Julia', 'julia@hachi.test', '$2a$10$wwkEuFnjhMlDiwTSC6KIJenstKiXG5fI5MI3qBjmBgTbj9iW/kRVa',
        '11987654322', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 1, DATE '1998-08-22', 'São Paulo', 'Centro', 0
 WHERE NOT EXISTS (SELECT 1 FROM usuario WHERE LOWER(email) = 'julia@hachi.test');
 
+-- Senha em texto puro para login de teste: Leonardo123!
 INSERT INTO usuario (nome, email, senha, telefone, criado_em, atualizado_em, status_usuario, funcao, dt_nasc, cidade, regiao, selos)
 SELECT 'Leonardo', 'leonardo@hachi.test', '$2a$10$.WyWmWSJA4jmeS8x4Fb3D.qqBq/nL9kYIBLQDpvNqE7QXXI0l79d.',
        '11987654323', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 2, DATE '1995-03-10', 'São Paulo', 'Centro', 0
