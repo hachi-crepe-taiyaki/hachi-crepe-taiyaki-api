@@ -1,55 +1,56 @@
 package com.hachi.api.Entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import java.math.BigDecimal;
 
-import java.util.List;
-
+@Entity
+@Table(name = "Codigo")
 public class Codigo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idCodigo")
-    private Integer idCodigo;
+    @Column(name = "idCodigos")
+    private Integer idCodigos;
 
-    @Column(name = "codigo", length = 6, nullable = false)
-    private String codigoValor;
+    @Column(length = 6)
+    private String codigo;
 
-    @Column(name = "statusScan")
-    private Boolean statusScan;
+    private Integer statusScan;
 
-    public Codigo(Integer idCodigo, String codigoValor, Boolean statusScan) {
-        this.idCodigo = idCodigo;
-        this.codigoValor = codigoValor;
-        this.statusScan = statusScan;
+    @Column(precision = 5, scale = 2)
+    private BigDecimal valor;
+
+    public Codigo() {}
+
+    public Integer getIdCodigos() {
+        return idCodigos;
     }
 
-    public Codigo() {
+    public void setIdCodigos(Integer idCodigos) {
+        this.idCodigos = idCodigos;
     }
 
-    public Integer getIdCodigo() {
-        return idCodigo;
+    public String getCodigo() {
+        return codigo;
     }
 
-    public void setIdCodigo(Integer idCodigo) {
-        this.idCodigo = idCodigo;
+    public void setCodigo(String codigo) {
+        this.codigo = codigo;
     }
 
-    public String getCodigoValor() {
-        return codigoValor;
-    }
-
-    public void setCodigoValor(String codigoValor) {
-        this.codigoValor = codigoValor;
-    }
-
-    public Boolean getStatusScan() {
+    public Integer getStatusScan() {
         return statusScan;
     }
 
-    public void setStatusScan(Boolean statusScan) {
+    public void setStatusScan(Integer statusScan) {
         this.statusScan = statusScan;
+    }
+
+    public BigDecimal getValor() {
+        return valor;
+    }
+
+    public void setValor(BigDecimal valor) {
+        this.valor = valor;
     }
 }

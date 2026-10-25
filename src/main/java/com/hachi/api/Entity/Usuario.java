@@ -1,11 +1,11 @@
 package com.hachi.api.Entity;
 
 import jakarta.persistence.*;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "usuario")
 public class Usuario {
 
     @Id
@@ -13,16 +13,16 @@ public class Usuario {
     @Column(name = "idUsuario")
     private Integer idUsuario;
 
-    @Column(name = "nome", nullable = false, length = 100)
+    @Column(length = 100)
     private String nome;
 
-    @Column(name = "email", nullable = false, length = 100)
+    @Column(length = 100)
     private String email;
 
-    @Column(name = "senha", nullable = false, length = 255)
+    @Column(length = 255)
     private String senha;
 
-    @Column(name = "telefone", length = 11)
+    @Column(length = 11)
     private String telefone;
 
     @Column(name = "criado_em")
@@ -32,41 +32,22 @@ public class Usuario {
     private LocalDateTime atualizadoEm;
 
     @Column(name = "status_usuario")
-    private Boolean statusUsuario;
+    private Integer statusUsuario;
 
-    @Column(name = "funcao")
-    private Byte funcao;
+    private Integer funcao;
 
     @Column(name = "dt_nasc")
     private LocalDate dtNasc;
 
-    @Column(name = "cidade", length = 100)
+    @Column(length = 100)
     private String cidade;
 
-    @Column(name = "regiao", length = 100)
+    @Column(length = 100)
     private String regiao;
 
-    @Column(name = "selos", length = 100)
     private Integer selos;
 
-    public Usuario(Integer idUsuario, String nome, String email, String senha, String telefone, LocalDateTime criadoEm, LocalDateTime atualizadoEm, Boolean statusUsuario, Byte funcao, LocalDate dtNasc, String cidade, String regiao, Integer selos) {
-        this.idUsuario = idUsuario;
-        this.nome = nome;
-        this.email = email;
-        this.senha = senha;
-        this.telefone = telefone;
-        this.criadoEm = criadoEm;
-        this.atualizadoEm = atualizadoEm;
-        this.statusUsuario = statusUsuario;
-        this.funcao = funcao;
-        this.dtNasc = dtNasc;
-        this.cidade = cidade;
-        this.regiao = regiao;
-        this.selos = selos;
-    }
-
-    public Usuario() {
-    }
+    public Usuario() {}
 
     public Integer getIdUsuario() {
         return idUsuario;
@@ -124,19 +105,19 @@ public class Usuario {
         this.atualizadoEm = atualizadoEm;
     }
 
-    public Boolean getStatusUsuario() {
+    public Integer getStatusUsuario() {
         return statusUsuario;
     }
 
-    public void setStatusUsuario(Boolean statusUsuario) {
+    public void setStatusUsuario(Integer statusUsuario) {
         this.statusUsuario = statusUsuario;
     }
 
-    public Byte getFuncao() {
+    public Integer getFuncao() {
         return funcao;
     }
 
-    public void setFuncao(Byte funcao) {
+    public void setFuncao(Integer funcao) {
         this.funcao = funcao;
     }
 

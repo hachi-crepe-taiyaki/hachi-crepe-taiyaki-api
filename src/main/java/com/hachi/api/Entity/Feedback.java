@@ -1,10 +1,10 @@
 package com.hachi.api.Entity;
 
 import jakarta.persistence.*;
-
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "feedback")
 public class Feedback {
 
     @Id
@@ -12,29 +12,19 @@ public class Feedback {
     @Column(name = "idFeedback")
     private Integer idFeedback;
 
-    @Column(name = "nota")
     private Integer nota;
 
-    @Column(name = "comentario", length = 255)
+    @Column(length = 255)
     private String comentario;
 
     @Column(name = "data_hora")
     private LocalDateTime dataHora;
 
     @ManyToOne
-    @JoinColumn(name = "fk_usuario", nullable = false)
+    @JoinColumn(name = "fk_usuario")
     private Usuario usuario;
 
-    public Feedback(Integer idFeedback, Integer nota, String comentario, LocalDateTime dataHora, Usuario usuario) {
-        this.idFeedback = idFeedback;
-        this.nota = nota;
-        this.comentario = comentario;
-        this.dataHora = dataHora;
-        this.usuario = usuario;
-    }
-
-    public Feedback() {
-    }
+    public Feedback() {}
 
     public Integer getIdFeedback() {
         return idFeedback;
@@ -75,5 +65,4 @@ public class Feedback {
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
     }
-
 }

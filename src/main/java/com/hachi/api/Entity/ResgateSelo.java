@@ -1,51 +1,30 @@
 package com.hachi.api.Entity;
 
 import jakarta.persistence.*;
-
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "resgate_selo")
 public class ResgateSelo {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idResgateSelo")
-    private Integer idResgateSelo;
-
     @ManyToOne
-    @MapsId("codigoId")
-    @JoinColumn(name = "codigo_idCodigo")
+    @JoinColumn(name = "codigos_idCodigos")
     private Codigo codigo;
 
+    @Id
     @ManyToOne
-    @MapsId("usuarioId")
     @JoinColumn(name = "usuario_idUsuario")
     private Usuario usuario;
 
-    @Column(name = "valor", precision = 5, scale = 2)
-    private BigDecimal valor;
+    @Id
+    @Column(name = "idResgate")
+    private Integer idResgate;
 
     @Column(name = "data_hora")
     private LocalDateTime dataHora;
 
-    public ResgateSelo(Integer idResgateSelo, Codigo codigo, Usuario usuario, BigDecimal valor, LocalDateTime dataHora) {
-        this.idResgateSelo = idResgateSelo;
-        this.codigo = codigo;
-        this.usuario = usuario;
-        this.valor = valor;
-        this.dataHora = dataHora;
-    }
-
     public ResgateSelo() {
-    }
-
-    public Integer getIdResgateSelo() {
-        return idResgateSelo;
-    }
-
-    public void setIdResgateSelo(Integer idResgateSelo) {
-        this.idResgateSelo = idResgateSelo;
     }
 
     public Codigo getCodigo() {
@@ -64,12 +43,12 @@ public class ResgateSelo {
         this.usuario = usuario;
     }
 
-    public BigDecimal getValor() {
-        return valor;
+    public Integer getIdResgate() {
+        return idResgate;
     }
 
-    public void setValor(BigDecimal valor) {
-        this.valor = valor;
+    public void setIdResgate(Integer idResgate) {
+        this.idResgate = idResgate;
     }
 
     public LocalDateTime getDataHora() {
@@ -79,5 +58,4 @@ public class ResgateSelo {
     public void setDataHora(LocalDateTime dataHora) {
         this.dataHora = dataHora;
     }
-
 }

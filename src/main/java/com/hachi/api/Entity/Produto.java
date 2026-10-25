@@ -1,10 +1,10 @@
 package com.hachi.api.Entity;
 
 import jakarta.persistence.*;
-
 import java.math.BigDecimal;
 
 @Entity
+@Table(name = "produto")
 public class Produto {
 
     @Id
@@ -12,37 +12,25 @@ public class Produto {
     @Column(name = "idProduto")
     private Integer idProduto;
 
-    @Column(name = "nome", nullable = false, length = 100)
+    @Column(length = 100)
     private String nome;
 
-    @Column(name = "descricao", length = 255)
+    @Column(length = 255)
     private String descricao;
 
-    @Column(name = "preco", nullable = false, precision = 5, scale = 2)
+    @Column(precision = 5, scale = 2)
     private BigDecimal preco;
 
     @Column(name = "imagem_url", length = 255)
     private String imagemUrl;
 
-    @Column(name = "disponivel")
-    private Byte disponivel;
+    private Integer disponivel;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "fk_categoria", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "fk_categoria")
     private Categoria categoria;
 
-    public Produto(Integer idProduto, String nome, String descricao, BigDecimal preco, String imagemUrl, Byte disponivel, Categoria categoria) {
-        this.idProduto = idProduto;
-        this.nome = nome;
-        this.descricao = descricao;
-        this.preco = preco;
-        this.imagemUrl = imagemUrl;
-        this.disponivel = disponivel;
-        this.categoria = categoria;
-    }
-
-    public Produto() {
-    }
+    public Produto() {}
 
     public Integer getIdProduto() {
         return idProduto;
@@ -84,11 +72,11 @@ public class Produto {
         this.imagemUrl = imagemUrl;
     }
 
-    public Byte getDisponivel() {
+    public Integer getDisponivel() {
         return disponivel;
     }
 
-    public void setDisponivel(Byte disponivel) {
+    public void setDisponivel(Integer disponivel) {
         this.disponivel = disponivel;
     }
 
@@ -99,5 +87,4 @@ public class Produto {
     public void setCategoria(Categoria categoria) {
         this.categoria = categoria;
     }
-
 }

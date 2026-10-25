@@ -1,10 +1,10 @@
 package com.hachi.api.Entity;
 
 import jakarta.persistence.*;
-
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "resgate_item")
 public class ResgateItem {
 
     @Id
@@ -16,17 +16,10 @@ public class ResgateItem {
     private LocalDateTime dataResgate;
 
     @ManyToOne
-    @JoinColumn(name = "usuario_idUsuario", nullable = false)
+    @JoinColumn(name = "usuario_idUsuario")
     private Usuario usuario;
 
-    public ResgateItem(Integer idResgate, LocalDateTime dataResgate, Usuario usuario) {
-        this.idResgate = idResgate;
-        this.dataResgate = dataResgate;
-        this.usuario = usuario;
-    }
-
-    public ResgateItem() {
-    }
+    public ResgateItem() {}
 
     public Integer getIdResgate() {
         return idResgate;
