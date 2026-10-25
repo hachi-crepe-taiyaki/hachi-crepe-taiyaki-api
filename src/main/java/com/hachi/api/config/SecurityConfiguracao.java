@@ -3,6 +3,7 @@ package com.hachi.api.config;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -48,11 +49,13 @@ public class SecurityConfiguracao {
                         .accessDeniedHandler((requisicao, resposta, excecao) ->
                                 resposta.sendError(403, "Você não tem permissão para acessar este recurso.")))
                 .authorizeHttpRequests(autorizacao -> autorizacao
-                        .requestMatchers(org.springframework.http.HttpMethod.POST,
-                                "/api/usuarios", "/api/usuarios/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/usuarios", "/api/usuarios/login").permitAll()
+                        .requestMatchers(HttpMethod.GET,
+                                "/api/categorias", "/api/categorias/**",
+                                "/api/produtos", "/api/produtos/**").permitAll()
                         .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**",
                                 "/error", "/h2-console/**").permitAll()
-                        .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(filtroAutenticacao, UsernamePasswordAuthenticationFilter.class)
                 .build();

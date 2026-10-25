@@ -14,6 +14,13 @@
 - JWT signing secret comes from environment configuration and must be long and unpredictable in production.
 - Production cookies must use Secure and HTTPS. CORS must use explicit trusted origins with credentials, never wildcard origins.
 
+## Digital menu
+- Categories and products are publicly readable through the GET endpoints.
+- Creating, updating, and deleting categories or products requires a valid JWT belonging to an existing, active user whose database role is `funcao=2`. Do not rely only on the role claim inside the JWT; check the user in the database for every mutation.
+- A product belongs to one category via `produto.fk_categoria`; product writes must reference an existing category.
+- Do not delete a category while products reference it. Return a conflict instead of leaving products orphaned.
+- Product prices must be positive and fit `DECIMAL(5,2)`; `disponivel` is 0 or 1.
+
 ## Loyalty flow
 - Employees generate purchase codes after a qualifying restaurant purchase.
 - A client redeems a code from their phone; successful redemption is recorded in `resgate_selo`.
