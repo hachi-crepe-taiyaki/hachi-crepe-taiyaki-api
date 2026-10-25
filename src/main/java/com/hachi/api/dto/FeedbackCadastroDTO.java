@@ -2,7 +2,6 @@ package com.hachi.api.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -17,12 +16,10 @@ public class FeedbackCadastroDTO {
     @Min(value = 0, message = "A nota deve ser no mínimo 0.")
     @Max(value = 5, message = "A nota deve ser no máximo 5.")
     @Schema(description = "Nota de avaliação de 0 a 5, inclusive. Obrigatória.")
-    @Schema(description = "Nota de avaliação de 0 a 5, inclusive. Obrigatória.")
     private Integer nota;
 
     @NotBlank(message = "O comentário é obrigatório.")
     @Size(max = 255, message = "O comentário deve ter no máximo 255 caracteres.")
-    @Schema(description = "Comentário do feedback. Obrigatório; máximo de 255 caracteres.")
     @Schema(description = "Comentário do feedback. Obrigatório; máximo de 255 caracteres.")
     private String comentario;
 
