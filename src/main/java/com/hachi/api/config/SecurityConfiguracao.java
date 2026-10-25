@@ -1,9 +1,7 @@
 package com.hachi.api.config;
 
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -28,12 +26,6 @@ public class SecurityConfiguracao {
     }
 
     @Bean
-    ValidadorOrigemFilter filtroValidacaoOrigem(
-            @Value("${app.cors.allowed-origins:http://localhost:3000,http://localhost:5173,http://localhost:5500}") String origens) {
-        return new ValidadorOrigemFilter(origens);
-    }
-
-    @Bean
     FilterRegistrationBean<AutenticacaoFilter> desativarRegistroServletAutenticacao(AutenticacaoFilter filtro) {
         FilterRegistrationBean<AutenticacaoFilter> registro = new FilterRegistrationBean<>(filtro);
         registro.setEnabled(false);
@@ -41,19 +33,10 @@ public class SecurityConfiguracao {
     }
 
     @Bean
-    FilterRegistrationBean<ValidadorOrigemFilter> desativarRegistroServletOrigem(ValidadorOrigemFilter filtro) {
-        FilterRegistrationBean<ValidadorOrigemFilter> registro = new FilterRegistrationBean<>(filtro);
-        registro.setEnabled(false);
-        return registro;
-    }
-
-    @Bean
     SecurityFilterChain cadeiaSeguranca(HttpSecurity http, AutenticacaoFilter filtroAutenticacao,
-                                        ValidadorOrigemFilter filtroOrigem,
                                         AutenticacaoEntryPoint pontoEntradaAutenticacao) throws Exception {
         return http
                 .cors(Customizer.withDefaults())
-                // O filtro de origem protege requisições feitas por navegadores com cookies.
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(sessao -> sessao.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .formLogin(AbstractHttpConfigurer::disable)
@@ -68,7 +51,6 @@ public class SecurityConfiguracao {
                         .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(filtroAutenticacao, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(filtroOrigem, AutenticacaoFilter.class)
                 .build();
     }
 }
