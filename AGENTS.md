@@ -26,6 +26,7 @@
 
 ## Additional loyalty rules
 - Submitting feedback requires a valid JWT and an existing active user; associate the feedback with the authenticated user rather than accepting a user ID from the request body.
+- Listing feedback requires authentication. Results may be filtered independently or together by user ID, start date, and end date; date boundaries are inclusive by calendar day, and results are ordered newest first.
 - Feedback must include an integer grade from 0 through 5 and a non-blank comment of at most 255 characters. Store the submission timestamp and user relationship.
 
 
