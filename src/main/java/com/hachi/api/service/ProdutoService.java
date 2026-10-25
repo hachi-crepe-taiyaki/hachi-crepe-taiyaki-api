@@ -59,8 +59,10 @@ public class ProdutoService {
     }
 
     private void aplicarDados(Produto produto, ProdutoCadastroDTO dto) {
-        Categoria categoria = categoriaRepositorio.findById(dto.getIdCategoria()).orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, "Categoria não encontrada."));
+        Categoria categoria = categoriaRepositorio.findById(dto.getIdCategoria()).orElse(null);
+        if (categoria == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Categoria não encontrada.");
+        }
 
         produto.setNome(dto.getNome().trim());
         produto.setDescricao(normalizarOpcional(dto.getDescricao()));
@@ -71,8 +73,11 @@ public class ProdutoService {
     }
 
     private Produto obterProduto(Integer id) {
-        return produtoRepositorio.findById(id).orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto não encontrado."));
+        Produto produto = produtoRepositorio.findById(id).orElse(null);
+        if (produto == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto não encontrado.");
+        }
+        return produto;
     }
 
     private ProdutoRespostaDTO paraResposta(Produto produto) {
