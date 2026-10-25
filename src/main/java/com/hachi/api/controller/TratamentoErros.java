@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.server.ResponseStatusException;
@@ -22,6 +23,11 @@ public class TratamentoErros {
                 .collect(Collectors.joining(" "));
         if (mensagem.isBlank()) mensagem = "Os dados enviados são inválidos.";
         return ResponseEntity.badRequest().body(new RespostaErroDTO(mensagem));
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<RespostaErroDTO> tratarJsonInvalido(HttpMessageNotReadableException excecao) {
+        return ResponseEntity.badRequest().body(new RespostaErroDTO("O corpo da requisição contém um JSON inválido."));
     }
 
     @ExceptionHandler(ResponseStatusException.class)
