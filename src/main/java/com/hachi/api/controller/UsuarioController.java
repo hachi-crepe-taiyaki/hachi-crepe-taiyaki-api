@@ -3,6 +3,7 @@ package com.hachi.api.controller;
 import com.hachi.api.config.AutenticacaoFilter;
 import com.hachi.api.config.GerenciadorTokenJwt;
 import com.hachi.api.dto.CodigoResgateDTO;
+import com.hachi.api.dto.FeedbackCadastroDTO;
 import com.hachi.api.dto.LoginDTO;
 import com.hachi.api.dto.ResultadoLoginDTO;
 import com.hachi.api.dto.UsuarioAtualizacaoDTO;
@@ -11,6 +12,7 @@ import com.hachi.api.dto.UsuarioRespostaDTO;
 import com.hachi.api.service.UsuarioService;
 import com.hachi.api.service.ResgateSeloService;
 import com.hachi.api.service.ResgateItemService;
+import com.hachi.api.service.FeedbackService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,17 +31,20 @@ public class UsuarioController {
     private final UsuarioService usuarioService;
     private final ResgateSeloService resgateSeloService;
     private final ResgateItemService resgateItemService;
+    private final FeedbackService feedbackService;
     private final boolean cookieSeguro;
     private final GerenciadorTokenJwt gerenciadorTokenJwt;
 
     public UsuarioController(UsuarioService usuarioService,
                              ResgateSeloService resgateSeloService,
                              ResgateItemService resgateItemService,
+                             FeedbackService feedbackService,
                              GerenciadorTokenJwt gerenciadorTokenJwt,
                              @Value("${app.cookie.secure:false}") boolean cookieSeguro) {
         this.usuarioService = usuarioService;
         this.resgateSeloService = resgateSeloService;
         this.resgateItemService = resgateItemService;
+        this.feedbackService = feedbackService;
         this.gerenciadorTokenJwt = gerenciadorTokenJwt;
         this.cookieSeguro = cookieSeguro;
     }
@@ -62,6 +67,14 @@ public class UsuarioController {
     public ResponseEntity<Void> encerrarSessao(HttpServletResponse resposta) {
         resposta.addHeader("Set-Cookie", criarCookieToken("", Duration.ZERO).toString());
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/feedback")
+    public ResponseEntity<Void> cadastrarFeedback(@Valid @RequestBody FeedbackCadastroDTO dto,
+                                                   Authentication autenticacao) {
+        Integer idAutenticado = obterIdAutenticado(autenticacao);
+        feedbackService.cadastrarFeedback(idAutenticado, dto);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PostMapping("/{id}/selos")
