@@ -22,3 +22,11 @@
 - Feedback is associated with the authenticated user and stored in `feedback`.
 - Apply ownership and role checks in services, not only controllers.
 - Preserve database relationships and avoid deleting users in a way that silently breaks loyalty/feedback history; evaluate soft deletion or an explicit archival policy before enabling hard deletion.
+
+
+## Java implementation conventions
+- Use ordinary Java classes with fields, constructors, getters, and setters; do not use Java records.
+- Avoid Optional chains using `.filter(...)` or `.orElseThrow(...)`. Prefer explicit repository methods and readable `if` checks.
+- Name application methods in Portuguese and write user-facing validation and error messages in Portuguese.
+- Keep JWT/authentication configuration classes under `com.hachi.api.config`; keep OpenAPI configuration under `com.hachi.api.config.swagger`.
+- Keep the layered structure: controllers, DTO classes, mappers, repositories, and services.
