@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
-@Table(name = "Codigo")
+@Table(name = "Codigo", uniqueConstraints = @UniqueConstraint(name = "uk_codigo_codigo", columnNames = "codigo"))
 public class Codigo {
 
     @Id
@@ -12,7 +12,7 @@ public class Codigo {
     @Column(name = "idCodigos")
     private Integer idCodigos;
 
-    @Column(length = 6)
+    @Column(length = 6, nullable = false, unique = true)
     private String codigo;
 
     private Integer statusScan;
