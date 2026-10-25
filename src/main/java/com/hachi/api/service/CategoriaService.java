@@ -66,8 +66,11 @@ public class CategoriaService {
     }
 
     private Categoria obterCategoria(Integer id) {
-        return categoriaRepositorio.findById(id).orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, "Categoria não encontrada."));
+        Categoria categoria = categoriaRepositorio.findById(id).orElse(null);
+        if (categoria == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Categoria não encontrada.");
+        }
+        return categoria;
     }
 
     private CategoriaRespostaDTO paraResposta(Categoria categoria) {
