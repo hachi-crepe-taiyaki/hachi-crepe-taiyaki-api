@@ -8,7 +8,8 @@
 ## Authentication and users
 - Passwords are stored only as BCrypt hashes; never return password hashes in API responses.
 - Login returns a JWT in an HttpOnly cookie; logout expires that cookie.
-- Registration and login are public. Logout, profile updates, and account deletion require valid authentication.
+- Registration and login are public. Logout, profile updates, account deletion, and user listing require valid authentication.
+- User listing supports optional filters by email, telephone, birth date, city, region, and name. Email, telephone, and name use case-insensitive contains matching; birth date uses exact matching; city and region use case-insensitive exact matching. Multiple filters are combined with AND. The optional filters are implemented with one repository `@Query`; normalize blank string filters to null before querying.
 - A user may update/delete their own account. An admin may manage other accounts.
 - JWT signing secret comes from environment configuration and must be long and unpredictable in production.
 - Production cookies must use Secure and HTTPS. CORS must use explicit trusted origins with credentials, never wildcard origins.
@@ -23,13 +24,10 @@
 - Apply ownership and role checks in services, not only controllers.
 - Preserve database relationships and avoid deleting users in a way that silently breaks loyalty/feedback history; evaluate soft deletion or an explicit archival policy before enabling hard deletion.
 
-
 ## Additional loyalty rules
 - Submitting feedback requires a valid JWT and an existing active user; associate the feedback with the authenticated user rather than accepting a user ID from the request body.
 - Listing feedback requires authentication. Results may be filtered independently or together by user ID, start date, and end date; date boundaries are inclusive by calendar day, and results are ordered newest first.
 - Feedback must include an integer grade from 0 through 5 and a non-blank comment of at most 255 characters. Store the submission timestamp and user relationship.
-
-
 - Only an authenticated, active employee (`funcao=1` and `status_usuario=1`) may generate purchase codes.
 - Code generation requires the purchase amount. The amount must be at least R$ 40,00 and fit the database's `DECIMAL(5,2)` range (up to R$ 999,99).
 - Generated purchase codes are unique, six-character uppercase alphanumeric values and start unused (`statusScan=0`). A successful redemption marks the code used (`statusScan=1`); used or unknown codes cannot award another stamp.
@@ -44,5 +42,5 @@
 - Name application methods in Portuguese and write user-facing validation and error messages in Portuguese.
 - Keep JWT/authentication configuration classes under `com.hachi.api.config`; keep OpenAPI configuration under `com.hachi.api.config.swagger`.
 - Use only the JJWT library and APIs/patterns from the provided `config.zip` for JWT operations (`Jwts`, `Claims`, `Decoders.BASE64`, `Keys.hmacShaKeyFor`, signed-claims parsing); do not add a different JWT library or alternative token implementation.
-- Repository queries must use Spring Data JPA derived method names; do not use `@Query` or `@Param` for application repository methods.
+- Prefer Spring Data JPA derived query methods for repository queries. An explicit `@Query` is allowed when a single query must support multiple independent optional filters that cannot be expressed cleanly as a derived method.
 - Keep the layered structure: controllers, DTO classes, mappers, repositories, and services.
