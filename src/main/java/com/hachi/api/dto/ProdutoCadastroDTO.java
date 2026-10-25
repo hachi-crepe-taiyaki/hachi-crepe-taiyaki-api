@@ -15,7 +15,6 @@ import jakarta.validation.constraints.Size;
 import java.math.BigDecimal;
 
 @Schema(name = "ProdutoCadastroDTO", description = "Dados necessários para cadastrar ou atualizar um produto do cardápio.")
-@Schema(name = "ProdutoCadastroDTO", description = "Dados necessários para cadastrar ou atualizar um produto do cardápio.")
 public class ProdutoCadastroDTO {
     @NotBlank(message = "O nome do produto é obrigatório.")
     @Size(max = 100, message = "O nome do produto deve ter no máximo 100 caracteres.")
