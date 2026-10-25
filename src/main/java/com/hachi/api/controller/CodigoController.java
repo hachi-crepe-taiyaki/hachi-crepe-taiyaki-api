@@ -30,8 +30,8 @@ public class CodigoController {
         this.codigoService = codigoService;
     }
 
-    @Operation(summary = "Gerar código de fidelidade"
-    @SecurityRequirement(name = "cookieAuth"), description = "Gera um código de uso único associado ao valor de uma compra. Exige autenticação e papel de funcionário. O serviço valida o valor permitido e registra o código para posterior resgate pelo cliente.")
+    @Operation(summary = "Gerar código de fidelidade", description = "Gera um código de uso único associado ao valor de uma compra. Exige autenticação e papel de funcionário. O serviço valida o valor permitido e registra o código para posterior resgate pelo cliente.")
+    @SecurityRequirement(name = "cookieAuth")
     @ApiResponses({@ApiResponse(responseCode = "201", description = "Código gerado."), @ApiResponse(responseCode = "400", description = "Valor da compra inválido."), @ApiResponse(responseCode = "401", description = "Usuário não autenticado."), @ApiResponse(responseCode = "403", description = "Somente funcionários podem gerar códigos.")})
     @PostMapping("/gerar")
     public ResponseEntity<CodigoRespostaDTO> gerarCodigo(Authentication autenticacao, @Valid @RequestBody CodigoGeracaoDTO requisicao) {
