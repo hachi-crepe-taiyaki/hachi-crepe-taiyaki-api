@@ -1,11 +1,9 @@
 package com.hachi.api.service;
 
 import com.hachi.api.Entity.Codigo;
-import com.hachi.api.Entity.ResgateItem;
 import com.hachi.api.Entity.ResgateSelo;
 import com.hachi.api.Entity.Usuario;
 import com.hachi.api.repository.CodigoRepository;
-import com.hachi.api.repository.ResgateItemRepository;
 import com.hachi.api.repository.ResgateSeloRepository;
 import com.hachi.api.repository.UsuarioRepository;
 import org.springframework.http.HttpStatus;
@@ -19,16 +17,13 @@ import java.time.LocalDateTime;
 public class ResgateSeloService {
     private final UsuarioRepository usuarioRepositorio;
     private final CodigoRepository codigoRepositorio;
-    private final ResgateItemRepository resgateItemRepositorio;
     private final ResgateSeloRepository resgateSeloRepositorio;
 
     public ResgateSeloService(UsuarioRepository usuarioRepositorio,
                               CodigoRepository codigoRepositorio,
-                              ResgateItemRepository resgateItemRepositorio,
                               ResgateSeloRepository resgateSeloRepositorio) {
         this.usuarioRepositorio = usuarioRepositorio;
         this.codigoRepositorio = codigoRepositorio;
-        this.resgateItemRepositorio = resgateItemRepositorio;
         this.resgateSeloRepositorio = resgateSeloRepositorio;
     }
 
@@ -62,13 +57,10 @@ public class ResgateSeloService {
                     "Este código já foi utilizado.");
         }
 
-        ResgateItem resgateItem = new ResgateItem();
-        resgateItem.setUsuario(usuario);
-        resgateItem.setDataResgate(LocalDateTime.now());
-        resgateItem = resgateItemRepositorio.save(resgateItem);
-
         ResgateSelo resgateSelo = new ResgateSelo();
-        resgateSelo.setIdResgate(resgateItem.getIdResgate());
+        // Cada código só pode ser resgatado uma vez; seu ID identifica esta linha
+        // sem registrar o resgate de item em resgate_item.
+        resgateSelo.setIdResgate(codigo.getIdCodigos());
         resgateSelo.setCodigo(codigo);
         resgateSelo.setUsuario(usuario);
         resgateSelo.setDataHora(LocalDateTime.now());
