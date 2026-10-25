@@ -24,6 +24,16 @@
 - Preserve database relationships and avoid deleting users in a way that silently breaks loyalty/feedback history; evaluate soft deletion or an explicit archival policy before enabling hard deletion.
 
 
+## Additional loyalty rules
+
+- Only an authenticated, active employee (`funcao=1` and `status_usuario=1`) may generate purchase codes.
+- Code generation requires the purchase amount. The amount must be at least R$ 40,00 and fit the database's `DECIMAL(5,2)` range (up to R$ 999,99).
+- Generated purchase codes are unique, six-character uppercase alphanumeric values and start unused (`statusScan=0`). A successful redemption marks the code used (`statusScan=1`); used or unknown codes cannot award another stamp.
+- Code redemption requires an authenticated, active client and is allowed only for that client's own account. Trim surrounding whitespace and compare codes case-insensitively.
+- A successful code redemption must atomically create a `resgate_selo` history record, add exactly one stamp to the user's balance, and mark the code as used. If any step fails, the operation must roll back.
+- Redeeming a free item requires an authenticated, active user redeeming for their own account and a balance of at least 12 stamps. Record the redemption in `resgate_item` and subtract exactly 12 stamps; preserve any remaining balance. The redemption record is distinct from `resgate_selo`, which records earning a stamp.
+- A user's loyalty-balance changes must not update `atualizado_em`; that timestamp is reserved for changes to personal data.
+
 ## Java implementation conventions
 - Use ordinary Java classes with fields, constructors, getters, and setters; do not use Java records.
 - Avoid Optional chains using `.filter(...)` or `.orElseThrow(...)`. Prefer explicit repository methods and readable `if` checks.
