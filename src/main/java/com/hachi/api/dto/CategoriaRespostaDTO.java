@@ -5,7 +5,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(name = "CategoriaRespostaDTO", description = "Representação de uma categoria retornada pela API.")
-@Schema(name = "CategoriaRespostaDTO", description = "Representação de uma categoria retornada pela API.")
 public class CategoriaRespostaDTO {
     @Schema(description = "Identificador único da categoria.")
     @Schema(description = "Identificador único da categoria.")
