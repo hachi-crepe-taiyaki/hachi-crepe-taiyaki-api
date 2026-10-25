@@ -1,0 +1,57 @@
+package com.hachi.api.config;
+
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+@Configuration
+@EnableMethodSecurity
+public class SecurityConfiguracao {
+    @Bean
+    PasswordEncoder codificadorSenha() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    AutenticacaoFilter filtroAutenticacao(GerenciadorTokenJwt gerenciadorTokenJwt) {
+        return new AutenticacaoFilter(gerenciadorTokenJwt);
+    }
+
+    @Bean
+    FilterRegistrationBean<AutenticacaoFilter> desativarRegistroServletAutenticacao(AutenticacaoFilter filtro) {
+        FilterRegistrationBean<AutenticacaoFilter> registro = new FilterRegistrationBean<>(filtro);
+        registro.setEnabled(false);
+        return registro;
+    }
+
+    @Bean
+    SecurityFilterChain cadeiaSeguranca(HttpSecurity http, AutenticacaoFilter filtroAutenticacao,
+                                        AutenticacaoEntryPoint pontoEntradaAutenticacao) throws Exception {
+        return http
+                .cors(Customizer.withDefaults())
+                .csrf(AbstractHttpConfigurer::disable)
+                .sessionManagement(sessao -> sessao.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .formLogin(AbstractHttpConfigurer::disable)
+                .httpBasic(AbstractHttpConfigurer::disable)
+                .exceptionHandling(configuracao -> configuracao
+                        .authenticationEntryPoint(pontoEntradaAutenticacao)
+                        .accessDeniedHandler((requisicao, resposta, excecao) ->
+                                resposta.sendError(403, "Você não tem permissão para acessar este recurso.")))
+                .authorizeHttpRequests(autorizacao -> autorizacao
+                        .requestMatchers("/api/usuarios", "/api/usuarios/login", "/swagger-ui/**",
+                                "/swagger-ui.html", "/v3/api-docs/**", "/error").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
+                        .anyRequest().authenticated())
+                .addFilterBefore(filtroAutenticacao, UsernamePasswordAuthenticationFilter.class)
+                .build();
+    }
+}
