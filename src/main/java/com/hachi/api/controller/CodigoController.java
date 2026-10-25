@@ -1,6 +1,9 @@
 package com.hachi.api.controller;
 
 import com.hachi.api.dto.CodigoRespostaDTO;
+import com.hachi.api.dto.CodigoGeracaoDTO;
+import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.RequestBody;
 import com.hachi.api.service.CodigoService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +23,7 @@ public class CodigoController {
     }
 
     @PostMapping("/gerar")
-    public ResponseEntity<CodigoRespostaDTO> gerarCodigo(Authentication autenticacao) {
+    public ResponseEntity<CodigoRespostaDTO> gerarCodigo(Authentication autenticacao, @Valid @RequestBody CodigoGeracaoDTO requisicao) {
         Integer idUsuarioAutenticado = obterIdAutenticado(autenticacao);
 
         boolean funcionarioNoToken = autenticacao.getAuthorities().stream()
@@ -31,7 +34,7 @@ public class CodigoController {
                     "Somente funcionários podem gerar códigos.");
         }
 
-        CodigoRespostaDTO resposta = codigoService.gerarCodigo(idUsuarioAutenticado);
+        CodigoRespostaDTO resposta = codigoService.gerarCodigo(idUsuarioAutenticado, requisicao.getValor());
         return ResponseEntity.status(HttpStatus.CREATED).body(resposta);
     }
 

@@ -3,6 +3,7 @@ package com.hachi.api.service;
 import com.hachi.api.Entity.Codigo;
 import com.hachi.api.Entity.Usuario;
 import com.hachi.api.dto.CodigoRespostaDTO;
+import java.math.BigDecimal;
 import com.hachi.api.mapper.CodigoMapper;
 import com.hachi.api.repository.CodigoRepository;
 import com.hachi.api.repository.UsuarioRepository;
@@ -32,7 +33,7 @@ public class CodigoService {
     }
 
     @Transactional
-    public CodigoRespostaDTO gerarCodigo(Integer idUsuarioAutenticado) {
+    public CodigoRespostaDTO gerarCodigo(Integer idUsuarioAutenticado, BigDecimal valor) {
         if (idUsuarioAutenticado == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,
                     "É necessário estar autenticado para gerar um código.");
@@ -56,6 +57,7 @@ public class CodigoService {
                 Codigo novoCodigo = new Codigo();
                 novoCodigo.setCodigo(codigoGerado);
                 novoCodigo.setStatusScan(0);
+                novoCodigo.setValor(valor);
 
                 return mapeador.paraResposta(codigoRepositorio.save(novoCodigo));
             }

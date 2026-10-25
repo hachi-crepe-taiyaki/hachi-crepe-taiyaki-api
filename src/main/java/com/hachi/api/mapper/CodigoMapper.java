@@ -10,7 +10,8 @@ public class CodigoMapper {
         return new CodigoRespostaDTO(
                 codigo.getIdCodigos(),
                 codigo.getCodigo(),
-                codigo.getStatusScan()
+                codigo.getStatusScan(),
+                codigo.getValor()
         );
     }
 }
