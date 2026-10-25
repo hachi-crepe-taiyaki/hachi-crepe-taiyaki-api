@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS usuario (
 
 CREATE TABLE IF NOT EXISTS Codigo (
                                       idCodigos INT AUTO_INCREMENT PRIMARY KEY,
-                                      codigo CHAR(6),
+                                      codigo CHAR(6) NOT NULL UNIQUE,
     statusScan TINYINT,
     valor DECIMAL(5,2)
     );
