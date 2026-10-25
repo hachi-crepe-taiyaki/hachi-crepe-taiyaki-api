@@ -61,7 +61,7 @@ CREATE TABLE IF NOT EXISTS resgate_item (
     );
 
 CREATE TABLE IF NOT EXISTS resgate_selo (
-                                            idResgate INT,
+                                            idResgate INT AUTO_INCREMENT,
                                             codigos_idCodigos INT,
                                             usuario_idUsuario INT,
                                             data_hora TIMESTAMP,

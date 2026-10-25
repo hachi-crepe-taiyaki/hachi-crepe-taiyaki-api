@@ -10,6 +10,7 @@ import com.hachi.api.dto.UsuarioCadastroDTO;
 import com.hachi.api.dto.UsuarioRespostaDTO;
 import com.hachi.api.service.UsuarioService;
 import com.hachi.api.service.ResgateSeloService;
+import com.hachi.api.service.ResgateItemService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,15 +28,18 @@ import java.time.Duration;
 public class UsuarioController {
     private final UsuarioService usuarioService;
     private final ResgateSeloService resgateSeloService;
+    private final ResgateItemService resgateItemService;
     private final boolean cookieSeguro;
     private final GerenciadorTokenJwt gerenciadorTokenJwt;
 
     public UsuarioController(UsuarioService usuarioService,
                              ResgateSeloService resgateSeloService,
+                             ResgateItemService resgateItemService,
                              GerenciadorTokenJwt gerenciadorTokenJwt,
                              @Value("${app.cookie.secure:false}") boolean cookieSeguro) {
         this.usuarioService = usuarioService;
         this.resgateSeloService = resgateSeloService;
+        this.resgateItemService = resgateItemService;
         this.gerenciadorTokenJwt = gerenciadorTokenJwt;
         this.cookieSeguro = cookieSeguro;
     }
@@ -66,6 +70,13 @@ public class UsuarioController {
                                               Authentication autenticacao) {
         Integer idAutenticado = obterIdAutenticado(autenticacao);
         resgateSeloService.resgatarSelo(idAutenticado, id, dto.getCodigo());
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{id}/resgatarItem")
+    public ResponseEntity<Void> resgatarItem(@PathVariable Integer id, Authentication autenticacao) {
+        Integer idAutenticado = obterIdAutenticado(autenticacao);
+        resgateItemService.resgatarItem(idAutenticado, id);
         return ResponseEntity.noContent().build();
     }
 

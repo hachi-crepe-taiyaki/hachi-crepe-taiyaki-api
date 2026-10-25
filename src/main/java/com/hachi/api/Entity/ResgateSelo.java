@@ -16,6 +16,7 @@ public class ResgateSelo {
     private Usuario usuario;
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idResgate")
     private Integer idResgate;
 
