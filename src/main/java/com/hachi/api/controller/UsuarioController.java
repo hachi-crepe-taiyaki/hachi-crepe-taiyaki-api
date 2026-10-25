@@ -67,8 +67,8 @@ public class UsuarioController {
         return ResponseEntity.status(HttpStatus.CREATED).body(usuarioService.cadastrarUsuario(dto));
     }
 
-    @Operation(summary = "Listar usuários"
-    @SecurityRequirement(name = "cookieAuth"), description = "Retorna usuários que correspondem aos filtros opcionais. E-mail e nome aceitam correspondência parcial sem diferenciar maiúsculas de minúsculas; telefone aceita correspondência parcial; data de nascimento é exata. Requer autenticação.")
+    @Operation(summary = "Listar usuários", description = "Retorna usuários que correspondem aos filtros opcionais. E-mail e nome aceitam correspondência parcial sem diferenciar maiúsculas de minúsculas; telefone aceita correspondência parcial; data de nascimento é exata. Requer autenticação.")
+    @SecurityRequirement(name = "cookieAuth")
     @ApiResponses({@ApiResponse(responseCode = "200", description = "Lista retornada, possivelmente vazia."), @ApiResponse(responseCode = "401", description = "Usuário não autenticado.")})
     @GetMapping
     public ResponseEntity<List<UsuarioRespostaDTO>> listarUsuarios(
