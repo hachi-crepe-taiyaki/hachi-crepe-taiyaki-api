@@ -1,10 +1,12 @@
 package com.hachi.api.controller;
 
+import com.hachi.api.config.AutenticacaoFilter;
+import com.hachi.api.config.GerenciadorTokenJwt;
 import com.hachi.api.dto.LoginDTO;
+import com.hachi.api.dto.ResultadoLoginDTO;
 import com.hachi.api.dto.UsuarioAtualizacaoDTO;
 import com.hachi.api.dto.UsuarioCadastroDTO;
 import com.hachi.api.dto.UsuarioRespostaDTO;
-import com.hachi.api.security.JwtAuthenticationFilter;
 import com.hachi.api.service.UsuarioService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -21,74 +23,74 @@ import java.time.Duration;
 @RestController
 @RequestMapping("/api/usuarios")
 public class UsuarioController {
-    private final UsuarioService service;
-    private final boolean secureCookie;
-    private final long jwtExpirationMinutes;
+    private final UsuarioService usuarioService;
+    private final boolean cookieSeguro;
+    private final GerenciadorTokenJwt gerenciadorTokenJwt;
 
-    public UsuarioController(UsuarioService service,
-                             @Value("${app.cookie.secure:false}") boolean secureCookie,
-                             @Value("${app.jwt.expiration-minutes:60}") long jwtExpirationMinutes) {
-        this.service = service;
-        this.secureCookie = secureCookie;
-        this.jwtExpirationMinutes = jwtExpirationMinutes;
+    public UsuarioController(UsuarioService usuarioService,
+                             GerenciadorTokenJwt gerenciadorTokenJwt,
+                             @Value("${app.cookie.secure:false}") boolean cookieSeguro) {
+        this.usuarioService = usuarioService;
+        this.gerenciadorTokenJwt = gerenciadorTokenJwt;
+        this.cookieSeguro = cookieSeguro;
     }
 
     @PostMapping
-    public ResponseEntity<UsuarioRespostaDTO> cadastrar(@Valid @RequestBody UsuarioCadastroDTO dto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.cadastrar(dto));
+    public ResponseEntity<UsuarioRespostaDTO> cadastrarUsuario(@Valid @RequestBody UsuarioCadastroDTO dto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(usuarioService.cadastrarUsuario(dto));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<UsuarioRespostaDTO> login(@Valid @RequestBody LoginDTO dto,
-                                                     HttpServletResponse response) {
-        UsuarioService.LoginResult result = service.login(dto);
-        response.addHeader("Set-Cookie", tokenCookie(result.token(), Duration.ofMinutes(jwtExpirationMinutes)).toString());
-        return ResponseEntity.ok(result.usuario());
+    public ResponseEntity<UsuarioRespostaDTO> autenticarUsuario(@Valid @RequestBody LoginDTO dto,
+                                                                 HttpServletResponse resposta) {
+        ResultadoLoginDTO resultado = usuarioService.autenticarUsuario(dto);
+        resposta.addHeader("Set-Cookie", criarCookieToken(resultado.getToken(),
+                Duration.ofMinutes(gerenciadorTokenJwt.obterValidadeMinutos())).toString());
+        return ResponseEntity.ok(resultado.getUsuario());
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<Void> logout(HttpServletResponse response) {
-        response.addHeader("Set-Cookie", tokenCookie("", Duration.ZERO).toString());
+    public ResponseEntity<Void> encerrarSessao(HttpServletResponse resposta) {
+        resposta.addHeader("Set-Cookie", criarCookieToken("", Duration.ZERO).toString());
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UsuarioRespostaDTO> atualizar(@PathVariable Integer id,
-                                                         @Valid @RequestBody UsuarioAtualizacaoDTO dto,
-                                                         Authentication authentication) {
-        Integer authenticatedId = authenticatedId(authentication);
-        boolean admin = authentication.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
-        return ResponseEntity.ok(service.atualizar(id, dto, authenticatedId, admin));
+    public ResponseEntity<UsuarioRespostaDTO> atualizarUsuario(@PathVariable Integer id,
+            @Valid @RequestBody UsuarioAtualizacaoDTO dto, Authentication autenticacao) {
+        Integer idAutenticado = obterIdAutenticado(autenticacao);
+        boolean administrador = autenticacao.getAuthorities().stream()
+                .anyMatch(autoridade -> autoridade.getAuthority().equals("ROLE_ADMIN"));
+        return ResponseEntity.ok(usuarioService.atualizarUsuario(id, dto, idAutenticado, administrador));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> excluir(@PathVariable Integer id, Authentication authentication) {
-        Integer authenticatedId = authenticatedId(authentication);
-        boolean admin = authentication.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
-        service.excluir(id, authenticatedId, admin);
+    public ResponseEntity<Void> excluirUsuario(@PathVariable Integer id, Authentication autenticacao) {
+        Integer idAutenticado = obterIdAutenticado(autenticacao);
+        boolean administrador = autenticacao.getAuthorities().stream()
+                .anyMatch(autoridade -> autoridade.getAuthority().equals("ROLE_ADMIN"));
+        usuarioService.excluirUsuario(id, idAutenticado, administrador);
         return ResponseEntity.noContent().build();
     }
 
-    private Integer authenticatedId(Authentication authentication) {
-        if (authentication == null || authentication.getName() == null) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Authentication required.");
+    private Integer obterIdAutenticado(Authentication autenticacao) {
+        if (autenticacao == null || autenticacao.getName() == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "É necessário estar autenticado.");
         }
         try {
-            return Integer.valueOf(authentication.getName());
-        } catch (NumberFormatException exception) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid authentication.");
+            return Integer.valueOf(autenticacao.getName());
+        } catch (NumberFormatException excecao) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "A autenticação é inválida.");
         }
     }
 
-    private ResponseCookie tokenCookie(String token, Duration maxAge) {
-        return ResponseCookie.from(JwtAuthenticationFilter.COOKIE_NAME, token)
+    private ResponseCookie criarCookieToken(String token, Duration duracao) {
+        return ResponseCookie.from(AutenticacaoFilter.COOKIE_NOME, token)
                 .httpOnly(true)
-                .secure(secureCookie)
+                .secure(cookieSeguro)
                 .sameSite("Strict")
                 .path("/")
-                .maxAge(maxAge)
+                .maxAge(duracao)
                 .build();
     }
 }
