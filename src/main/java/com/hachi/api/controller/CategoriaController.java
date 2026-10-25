@@ -1,5 +1,7 @@
 package com.hachi.api.controller;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -42,7 +44,8 @@ public class CategoriaController {
         return ResponseEntity.ok(categoriaService.buscarCategoria(id));
     }
 
-    @Operation(summary = "Cadastrar categoria", description = "Cria uma categoria para o cardápio. Requer autenticação por cookie JWT e permissão de administrador. O nome é obrigatório e os campos são validados.")
+    @Operation(summary = "Cadastrar categoria"
+    @SecurityRequirement(name = "cookieAuth"), description = "Cria uma categoria para o cardápio. Requer autenticação por cookie JWT e permissão de administrador. O nome é obrigatório e os campos são validados.")
     @ApiResponses({@ApiResponse(responseCode = "201", description = "Categoria criada."), @ApiResponse(responseCode = "400", description = "Dados inválidos."), @ApiResponse(responseCode = "401", description = "Usuário não autenticado."), @ApiResponse(responseCode = "403", description = "Usuário não é administrador.")})
     @PostMapping
     public ResponseEntity<CategoriaRespostaDTO> cadastrarCategoria(
@@ -51,7 +54,8 @@ public class CategoriaController {
                 categoriaService.cadastrarCategoria(dto, obterIdAutenticado(autenticacao)));
     }
 
-    @Operation(summary = "Atualizar categoria", description = "Substitui os dados editáveis da categoria identificada. Requer administrador autenticado. Retorna 404 se a categoria não existir e 400 para dados inválidos.")
+    @Operation(summary = "Atualizar categoria"
+    @SecurityRequirement(name = "cookieAuth"), description = "Substitui os dados editáveis da categoria identificada. Requer administrador autenticado. Retorna 404 se a categoria não existir e 400 para dados inválidos.")
     @ApiResponses({@ApiResponse(responseCode = "200", description = "Categoria atualizada."), @ApiResponse(responseCode = "400", description = "Dados inválidos."), @ApiResponse(responseCode = "401", description = "Usuário não autenticado."), @ApiResponse(responseCode = "403", description = "Usuário não é administrador."), @ApiResponse(responseCode = "404", description = "Categoria não encontrada.")})
     @PutMapping("/{id}")
     public ResponseEntity<CategoriaRespostaDTO> atualizarCategoria(
@@ -61,7 +65,8 @@ public class CategoriaController {
                 categoriaService.atualizarCategoria(id, dto, obterIdAutenticado(autenticacao)));
     }
 
-    @Operation(summary = "Excluir categoria", description = "Remove uma categoria sem produtos associados. Requer administrador autenticado. A categoria não pode ser excluída enquanto possuir produtos.")
+    @Operation(summary = "Excluir categoria"
+    @SecurityRequirement(name = "cookieAuth"), description = "Remove uma categoria sem produtos associados. Requer administrador autenticado. A categoria não pode ser excluída enquanto possuir produtos.")
     @ApiResponses({@ApiResponse(responseCode = "204", description = "Categoria excluída."), @ApiResponse(responseCode = "401", description = "Usuário não autenticado."), @ApiResponse(responseCode = "403", description = "Usuário não é administrador."), @ApiResponse(responseCode = "404", description = "Categoria não encontrada."), @ApiResponse(responseCode = "409", description = "Categoria possui produtos associados e não pode ser excluída.")})
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> excluirCategoria(@PathVariable Integer id, Authentication autenticacao) {
