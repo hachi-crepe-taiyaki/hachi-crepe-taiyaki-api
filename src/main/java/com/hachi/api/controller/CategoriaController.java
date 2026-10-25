@@ -59,7 +59,7 @@ public class CategoriaController {
     @ApiResponses({@ApiResponse(responseCode = "200", description = "Categoria atualizada."), @ApiResponse(responseCode = "400", description = "Dados inválidos."), @ApiResponse(responseCode = "401", description = "Usuário não autenticado."), @ApiResponse(responseCode = "403", description = "Usuário não é administrador."), @ApiResponse(responseCode = "404", description = "Categoria não encontrada.")})
     @PutMapping("/{id}")
     public ResponseEntity<CategoriaRespostaDTO> atualizarCategoria(
-            @PathVariable Integer id, @Valid @RequestBody CategoriaCadastroDTO dto,
+            @Parameter(description = "Identificador numérico do recurso no caminho da URL.", example = "1") @PathVariable Integer id, @Valid @RequestBody CategoriaCadastroDTO dto,
             Authentication autenticacao) {
         return ResponseEntity.ok(
                 categoriaService.atualizarCategoria(id, dto, obterIdAutenticado(autenticacao)));
@@ -69,7 +69,7 @@ public class CategoriaController {
     @SecurityRequirement(name = "cookieAuth")
     @ApiResponses({@ApiResponse(responseCode = "204", description = "Categoria excluída."), @ApiResponse(responseCode = "401", description = "Usuário não autenticado."), @ApiResponse(responseCode = "403", description = "Usuário não é administrador."), @ApiResponse(responseCode = "404", description = "Categoria não encontrada."), @ApiResponse(responseCode = "409", description = "Categoria possui produtos associados e não pode ser excluída.")})
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> excluirCategoria(@PathVariable Integer id, Authentication autenticacao) {
+    public ResponseEntity<Void> excluirCategoria(@Parameter(description = "Identificador numérico do recurso no caminho da URL.", example = "1") @PathVariable Integer id, Authentication autenticacao) {
         categoriaService.excluirCategoria(id, obterIdAutenticado(autenticacao));
         return ResponseEntity.noContent().build();
     }
