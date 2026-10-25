@@ -59,7 +59,7 @@ public class ProdutoController {
     @ApiResponses({@ApiResponse(responseCode = "200", description = "Produto atualizado."), @ApiResponse(responseCode = "400", description = "Dados inválidos ou categoria informada inválida."), @ApiResponse(responseCode = "401", description = "Usuário não autenticado."), @ApiResponse(responseCode = "403", description = "Usuário não é administrador."), @ApiResponse(responseCode = "404", description = "Produto não encontrado.")})
     @PutMapping("/{id}")
     public ResponseEntity<ProdutoRespostaDTO> atualizarProduto(
-            @PathVariable Integer id, @Valid @RequestBody ProdutoCadastroDTO dto,
+            @Parameter(description = "Identificador numérico do recurso no caminho da URL.", example = "1") @PathVariable Integer id, @Valid @RequestBody ProdutoCadastroDTO dto,
             Authentication autenticacao) {
         return ResponseEntity.ok(
                 produtoService.atualizarProduto(id, dto, obterIdAutenticado(autenticacao)));
@@ -69,7 +69,7 @@ public class ProdutoController {
     @SecurityRequirement(name = "cookieAuth")
     @ApiResponses({@ApiResponse(responseCode = "204", description = "Produto excluído."), @ApiResponse(responseCode = "401", description = "Usuário não autenticado."), @ApiResponse(responseCode = "403", description = "Usuário não é administrador."), @ApiResponse(responseCode = "404", description = "Produto não encontrado.")})
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> excluirProduto(@PathVariable Integer id, Authentication autenticacao) {
+    public ResponseEntity<Void> excluirProduto(@Parameter(description = "Identificador numérico do recurso no caminho da URL.", example = "1") @PathVariable Integer id, Authentication autenticacao) {
         produtoService.excluirProduto(id, obterIdAutenticado(autenticacao));
         return ResponseEntity.noContent().build();
     }
