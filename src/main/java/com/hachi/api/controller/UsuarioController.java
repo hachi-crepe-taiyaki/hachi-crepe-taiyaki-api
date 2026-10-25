@@ -94,8 +94,9 @@ public class UsuarioController {
         return ResponseEntity.ok(resultado.getUsuario());
     }
 
-    @Operation(summary = "Encerrar sessão", description = "Expira o cookie hachi_access_token no navegador. O endpoint não exige um token válido para permitir limpar uma sessão local.")
-    @ApiResponses({@ApiResponse(responseCode = "204", description = "Cookie de autenticação expirado.")})
+    @Operation(summary = "Encerrar sessão", description = "Expira o cookie hachi_access_token no navegador para encerrar a sessão autenticada. O endpoint exige autenticação porque a rota está protegida pela configuração de segurança.")
+    @SecurityRequirement(name = "cookieAuth")
+    @ApiResponses({@ApiResponse(responseCode = "204", description = "Cookie de autenticação expirado."), @ApiResponse(responseCode = "401", description = "Usuário não autenticado.")})
     @PostMapping("/logout")
     public ResponseEntity<Void> encerrarSessao(HttpServletResponse resposta) {
         resposta.addHeader("Set-Cookie", criarCookieToken("", Duration.ZERO).toString());
