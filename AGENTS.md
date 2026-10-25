@@ -29,4 +29,6 @@
 - Avoid Optional chains using `.filter(...)` or `.orElseThrow(...)`. Prefer explicit repository methods and readable `if` checks.
 - Name application methods in Portuguese and write user-facing validation and error messages in Portuguese.
 - Keep JWT/authentication configuration classes under `com.hachi.api.config`; keep OpenAPI configuration under `com.hachi.api.config.swagger`.
+- Use only the JJWT library and APIs/patterns from the provided `config.zip` for JWT operations (`Jwts`, `Claims`, `Decoders.BASE64`, `Keys.hmacShaKeyFor`, signed-claims parsing); do not add a different JWT library or alternative token implementation.
+- Repository queries must use Spring Data JPA derived method names; do not use `@Query` or `@Param` for application repository methods.
 - Keep the layered structure: controllers, DTO classes, mappers, repositories, and services.
