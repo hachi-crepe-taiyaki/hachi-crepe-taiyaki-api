@@ -48,8 +48,10 @@ public class SecurityConfiguracao {
                         .accessDeniedHandler((requisicao, resposta, excecao) ->
                                 resposta.sendError(403, "Você não tem permissão para acessar este recurso.")))
                 .authorizeHttpRequests(autorizacao -> autorizacao
-                        .requestMatchers("/api/usuarios", "/api/usuarios/login", "/swagger-ui/**",
-                                "/swagger-ui.html", "/v3/api-docs/**", "/error", "/h2-console/**").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.POST,
+                                "/api/usuarios", "/api/usuarios/login").permitAll()
+                        .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**",
+                                "/error", "/h2-console/**").permitAll()
                         .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(filtroAutenticacao, UsernamePasswordAuthenticationFilter.class)
