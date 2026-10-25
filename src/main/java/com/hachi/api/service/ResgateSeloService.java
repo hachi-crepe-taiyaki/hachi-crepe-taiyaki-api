@@ -58,16 +58,12 @@ public class ResgateSeloService {
         }
 
         ResgateSelo resgateSelo = new ResgateSelo();
-        // Cada código só pode ser resgatado uma vez; seu ID identifica esta linha
-        // sem registrar o resgate de item em resgate_item.
-        resgateSelo.setIdResgate(codigo.getIdCodigos());
         resgateSelo.setCodigo(codigo);
         resgateSelo.setUsuario(usuario);
         resgateSelo.setDataHora(LocalDateTime.now());
         resgateSeloRepositorio.save(resgateSelo);
 
         usuario.setSelos((usuario.getSelos() == null ? 0 : usuario.getSelos()) + 1);
-        usuario.setAtualizadoEm(LocalDateTime.now());
         usuarioRepositorio.save(usuario);
 
         codigo.setStatusScan(1);
