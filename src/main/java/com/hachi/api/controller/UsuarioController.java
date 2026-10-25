@@ -16,6 +16,7 @@ import com.hachi.api.service.FeedbackService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Duration;
+import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/usuarios")
@@ -52,6 +55,19 @@ public class UsuarioController {
     @PostMapping
     public ResponseEntity<UsuarioRespostaDTO> cadastrarUsuario(@Valid @RequestBody UsuarioCadastroDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(usuarioService.cadastrarUsuario(dto));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<UsuarioRespostaDTO>> listarUsuarios(
+            @RequestParam(required = false) String email,
+            @RequestParam(required = false) String telefone,
+            @RequestParam(required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dtNasc,
+            @RequestParam(required = false) String cidade,
+            @RequestParam(required = false) String regiao,
+            @RequestParam(required = false) String nome) {
+        return ResponseEntity.ok(
+                usuarioService.listarUsuarios(email, telefone, dtNasc, cidade, regiao, nome));
     }
 
     @PostMapping("/login")
