@@ -10,7 +10,6 @@ import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 @Schema(name = "CodigoGeracaoDTO", description = "Dados enviados para gerar um código associado ao valor de uma compra.")
-@Schema(name = "CodigoGeracaoDTO", description = "Dados enviados para gerar um código associado ao valor de uma compra.")
 public class CodigoGeracaoDTO {
 
     @NotNull(message = "O valor gasto é obrigatório.")
