@@ -25,6 +25,9 @@
 
 
 ## Additional loyalty rules
+- Submitting feedback requires a valid JWT and an existing active user; associate the feedback with the authenticated user rather than accepting a user ID from the request body.
+- Feedback must include an integer grade from 0 through 5 and a non-blank comment of at most 255 characters. Store the submission timestamp and user relationship.
+
 
 - Only an authenticated, active employee (`funcao=1` and `status_usuario=1`) may generate purchase codes.
 - Code generation requires the purchase amount. The amount must be at least R$ 40,00 and fit the database's `DECIMAL(5,2)` range (up to R$ 999,99).
