@@ -130,7 +130,7 @@ public class UsuarioController {
     @SecurityRequirement(name = "cookieAuth")
     @ApiResponses({@ApiResponse(responseCode = "204", description = "Recompensa resgatada."), @ApiResponse(responseCode = "401", description = "Usuário não autenticado."), @ApiResponse(responseCode = "403", description = "Tentativa de resgatar para outra conta."), @ApiResponse(responseCode = "404", description = "Usuário não encontrado."), @ApiResponse(responseCode = "409", description = "Saldo de selos insuficiente ou usuário inativo.")})
     @PostMapping("/{id}/resgatarItem")
-    public ResponseEntity<Void> resgatarItem(@PathVariable Integer id, Authentication autenticacao) {
+    public ResponseEntity<Void> resgatarItem(@Parameter(description = "Identificador numérico do recurso no caminho da URL.", example = "1") @PathVariable Integer id, Authentication autenticacao) {
         Integer idAutenticado = obterIdAutenticado(autenticacao);
         resgateItemService.resgatarItem(idAutenticado, id);
         return ResponseEntity.noContent().build();
@@ -140,7 +140,7 @@ public class UsuarioController {
     @SecurityRequirement(name = "cookieAuth")
     @ApiResponses({@ApiResponse(responseCode = "200", description = "Usuário atualizado."), @ApiResponse(responseCode = "400", description = "Dados inválidos."), @ApiResponse(responseCode = "401", description = "Usuário não autenticado."), @ApiResponse(responseCode = "403", description = "Sem permissão para atualizar esta conta."), @ApiResponse(responseCode = "404", description = "Usuário não encontrado."), @ApiResponse(responseCode = "409", description = "E-mail já utilizado por outra conta.")})
     @PutMapping("/{id}")
-    public ResponseEntity<UsuarioRespostaDTO> atualizarUsuario(@PathVariable Integer id,
+    public ResponseEntity<UsuarioRespostaDTO> atualizarUsuario(@Parameter(description = "Identificador numérico do recurso no caminho da URL.", example = "1") @PathVariable Integer id,
             @Valid @RequestBody UsuarioAtualizacaoDTO dto, Authentication autenticacao) {
         Integer idAutenticado = obterIdAutenticado(autenticacao);
         boolean administrador = autenticacao.getAuthorities().stream()
@@ -152,7 +152,7 @@ public class UsuarioController {
     @SecurityRequirement(name = "cookieAuth")
     @ApiResponses({@ApiResponse(responseCode = "204", description = "Conta desativada."), @ApiResponse(responseCode = "401", description = "Usuário não autenticado."), @ApiResponse(responseCode = "403", description = "Sem permissão para excluir esta conta."), @ApiResponse(responseCode = "404", description = "Usuário não encontrado.")})
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> excluirUsuario(@PathVariable Integer id, Authentication autenticacao) {
+    public ResponseEntity<Void> excluirUsuario(@Parameter(description = "Identificador numérico do recurso no caminho da URL.", example = "1") @PathVariable Integer id, Authentication autenticacao) {
         Integer idAutenticado = obterIdAutenticado(autenticacao);
         boolean administrador = autenticacao.getAuthorities().stream()
                 .anyMatch(autoridade -> autoridade.getAuthority().equals("ROLE_ADMIN"));
