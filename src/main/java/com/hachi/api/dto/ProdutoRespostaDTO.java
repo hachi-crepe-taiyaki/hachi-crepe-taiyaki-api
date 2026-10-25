@@ -7,7 +7,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.math.BigDecimal;
 
 @Schema(name = "ProdutoRespostaDTO", description = "Representação de um produto do cardápio, incluindo sua categoria.")
-@Schema(name = "ProdutoRespostaDTO", description = "Representação de um produto do cardápio, incluindo sua categoria.")
 public class ProdutoRespostaDTO {
     @Schema(description = "Identificador único do produto.")
     @Schema(description = "Identificador único do produto.")
