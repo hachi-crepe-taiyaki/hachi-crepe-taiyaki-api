@@ -9,7 +9,6 @@ import com.hachi.api.dto.UsuarioCadastroDTO;
 import com.hachi.api.dto.UsuarioRespostaDTO;
 import com.hachi.api.mapper.UsuarioMapper;
 import com.hachi.api.repository.UsuarioRepository;
-import com.hachi.api.specification.UsuarioSpecification;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -73,9 +72,22 @@ public class UsuarioService {
     @Transactional(readOnly = true)
     public List<UsuarioRespostaDTO> listarUsuarios(String email, String telefone, LocalDate dtNasc,
                                                    String cidade, String regiao, String nome) {
-        List<Usuario> usuarios = repositorio.findAll(
-                UsuarioSpecification.comFiltros(email, telefone, dtNasc, cidade, regiao, nome));
+        List<Usuario> usuarios = repositorio.buscarComFiltros(
+                normalizarFiltro(email),
+                normalizarFiltro(telefone),
+                dtNasc,
+                normalizarFiltro(cidade),
+                normalizarFiltro(regiao),
+                normalizarFiltro(nome)
+        );
         return usuarios.stream().map(mapeador::paraResposta).toList();
+    }
+
+    private String normalizarFiltro(String valor) {
+        if (valor == null || valor.isBlank()) {
+            return null;
+        }
+        return valor.trim();
     }
 
     @Transactional
