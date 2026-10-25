@@ -9,13 +9,16 @@ import com.hachi.api.dto.UsuarioCadastroDTO;
 import com.hachi.api.dto.UsuarioRespostaDTO;
 import com.hachi.api.mapper.UsuarioMapper;
 import com.hachi.api.repository.UsuarioRepository;
+import com.hachi.api.specification.UsuarioSpecification;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class UsuarioService {
@@ -65,6 +68,14 @@ public class UsuarioService {
         String token = gerenciadorTokenJwt.gerarToken(
                 usuario.getIdUsuario(), usuario.getEmail(), usuario.getFuncao());
         return new ResultadoLoginDTO(token, mapeador.paraResposta(usuario));
+    }
+
+    @Transactional(readOnly = true)
+    public List<UsuarioRespostaDTO> listarUsuarios(String email, String telefone, LocalDate dtNasc,
+                                                   String cidade, String regiao, String nome) {
+        List<Usuario> usuarios = repositorio.findAll(
+                UsuarioSpecification.comFiltros(email, telefone, dtNasc, cidade, regiao, nome));
+        return usuarios.stream().map(mapeador::paraResposta).toList();
     }
 
     @Transactional
