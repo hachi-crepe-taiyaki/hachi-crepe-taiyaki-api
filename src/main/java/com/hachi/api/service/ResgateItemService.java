@@ -50,7 +50,6 @@ public class ResgateItemService {
         resgateItemRepositorio.save(resgateItem);
 
         usuario.setSelos(selosAtuais - SELOS_NECESSARIOS);
-        usuario.setAtualizadoEm(LocalDateTime.now());
         usuarioRepositorio.save(usuario);
     }
 }
