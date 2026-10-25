@@ -1,13 +1,14 @@
 package com.hachi.api.service;
 
 import com.hachi.api.Entity.Usuario;
+import com.hachi.api.config.GerenciadorTokenJwt;
 import com.hachi.api.dto.LoginDTO;
+import com.hachi.api.dto.ResultadoLoginDTO;
 import com.hachi.api.dto.UsuarioAtualizacaoDTO;
 import com.hachi.api.dto.UsuarioCadastroDTO;
 import com.hachi.api.dto.UsuarioRespostaDTO;
 import com.hachi.api.mapper.UsuarioMapper;
 import com.hachi.api.repository.UsuarioRepository;
-import com.hachi.api.security.JwtService;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -18,83 +19,100 @@ import java.time.LocalDateTime;
 
 @Service
 public class UsuarioService {
-    private final UsuarioRepository repository;
-    private final PasswordEncoder passwordEncoder;
-    private final UsuarioMapper mapper;
-    private final JwtService jwtService;
+    private final UsuarioRepository repositorio;
+    private final PasswordEncoder codificadorSenha;
+    private final UsuarioMapper mapeador;
+    private final GerenciadorTokenJwt gerenciadorTokenJwt;
 
-    public UsuarioService(UsuarioRepository repository, PasswordEncoder passwordEncoder,
-                          UsuarioMapper mapper, JwtService jwtService) {
-        this.repository = repository;
-        this.passwordEncoder = passwordEncoder;
-        this.mapper = mapper;
-        this.jwtService = jwtService;
+    public UsuarioService(UsuarioRepository repositorio, PasswordEncoder codificadorSenha,
+                          UsuarioMapper mapeador, GerenciadorTokenJwt gerenciadorTokenJwt) {
+        this.repositorio = repositorio;
+        this.codificadorSenha = codificadorSenha;
+        this.mapeador = mapeador;
+        this.gerenciadorTokenJwt = gerenciadorTokenJwt;
     }
 
     @Transactional
-    public UsuarioRespostaDTO cadastrar(UsuarioCadastroDTO dto) {
-        if (repository.existsByEmailIgnoreCase(dto.email())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Email already registered.");
+    public UsuarioRespostaDTO cadastrarUsuario(UsuarioCadastroDTO dto) {
+        if (repositorio.contarPorEmail(dto.getEmail().trim()) > 0) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Este e-mail já está cadastrado.");
         }
+
         Usuario usuario = new Usuario();
-        usuario.setNome(dto.nome().trim());
-        usuario.setEmail(dto.email().trim().toLowerCase());
-        usuario.setSenha(passwordEncoder.encode(dto.senha()));
-        usuario.setTelefone(dto.telefone());
-        usuario.setDtNasc(dto.dtNasc());
-        usuario.setCidade(dto.cidade());
-        usuario.setRegiao(dto.regiao());
+        usuario.setNome(dto.getNome().trim());
+        usuario.setEmail(dto.getEmail().trim().toLowerCase());
+        usuario.setSenha(codificadorSenha.encode(dto.getSenha()));
+        usuario.setTelefone(dto.getTelefone());
+        usuario.setDtNasc(dto.getDtNasc());
+        usuario.setCidade(dto.getCidade());
+        usuario.setRegiao(dto.getRegiao());
         usuario.setFuncao(0);
         usuario.setStatusUsuario(1);
         usuario.setSelos(0);
         usuario.setCriadoEm(LocalDateTime.now());
         usuario.setAtualizadoEm(LocalDateTime.now());
-        return mapper.toResponse(repository.save(usuario));
+
+        return mapeador.paraResposta(repositorio.save(usuario));
     }
 
-    public LoginResult login(LoginDTO dto) {
-        Usuario usuario = repository.findByEmailIgnoreCase(dto.email().trim())
-                .filter(u -> passwordEncoder.matches(dto.senha(), u.getSenha()))
-                .filter(u -> u.getStatusUsuario() == null || u.getStatusUsuario() == 1)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials."));
-        String token = jwtService.generateToken(usuario.getIdUsuario(), usuario.getEmail(), usuario.getFuncao());
-        return new LoginResult(token, mapper.toResponse(usuario));
+    public ResultadoLoginDTO autenticarUsuario(LoginDTO dto) {
+        Usuario usuario = repositorio.buscarPorEmail(dto.getEmail().trim());
+        if (usuario == null || !codificadorSenha.matches(dto.getSenha(), usuario.getSenha())
+                || (usuario.getStatusUsuario() != null && usuario.getStatusUsuario() != 1)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "E-mail ou senha inválidos.");
+        }
+
+        String token = gerenciadorTokenJwt.gerarToken(
+                usuario.getIdUsuario(), usuario.getEmail(), usuario.getFuncao());
+        return new ResultadoLoginDTO(token, mapeador.paraResposta(usuario));
     }
 
     @Transactional
-    public UsuarioRespostaDTO atualizar(Integer id, UsuarioAtualizacaoDTO dto, Integer authenticatedId, boolean admin) {
-        if (!admin && !id.equals(authenticatedId)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You may only update your own account.");
+    public UsuarioRespostaDTO atualizarUsuario(Integer id, UsuarioAtualizacaoDTO dto,
+                                                Integer idUsuarioAutenticado, boolean administrador) {
+        if (!administrador && !id.equals(idUsuarioAutenticado)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,
+                    "Você só pode alterar os dados da sua própria conta.");
         }
-        Usuario usuario = repository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found."));
-        if (dto.email() != null && repository.existsByEmailIgnoreCaseAndIdUsuarioNot(dto.email().trim(), id)) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Email already registered.");
+
+        Usuario usuario = repositorio.buscarPorId(id);
+        if (usuario == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado.");
         }
-        if (dto.nome() != null) usuario.setNome(dto.nome().trim());
-        if (dto.email() != null) usuario.setEmail(dto.email().trim().toLowerCase());
-        if (dto.senha() != null && !dto.senha().isBlank()) usuario.setSenha(passwordEncoder.encode(dto.senha()));
-        if (dto.telefone() != null) usuario.setTelefone(dto.telefone());
-        if (dto.dtNasc() != null) usuario.setDtNasc(dto.dtNasc());
-        if (dto.cidade() != null) usuario.setCidade(dto.cidade());
-        if (dto.regiao() != null) usuario.setRegiao(dto.regiao());
-        // Role, status, and loyalty balance are intentionally not client-editable.
+        if (dto.getEmail() != null && repositorio.contarPorEmailDeOutroUsuario(dto.getEmail().trim(), id) > 0) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Este e-mail já está cadastrado.");
+        }
+
+        if (dto.getNome() != null) usuario.setNome(dto.getNome().trim());
+        if (dto.getEmail() != null) usuario.setEmail(dto.getEmail().trim().toLowerCase());
+        if (dto.getSenha() != null && !dto.getSenha().isBlank()) {
+            usuario.setSenha(codificadorSenha.encode(dto.getSenha()));
+        }
+        if (dto.getTelefone() != null) usuario.setTelefone(dto.getTelefone());
+        if (dto.getDtNasc() != null) usuario.setDtNasc(dto.getDtNasc());
+        if (dto.getCidade() != null) usuario.setCidade(dto.getCidade());
+        if (dto.getRegiao() != null) usuario.setRegiao(dto.getRegiao());
+
+        // A função, o status e a quantidade de selos não podem ser alterados por este endpoint.
         usuario.setAtualizadoEm(LocalDateTime.now());
-        return mapper.toResponse(repository.save(usuario));
+        return mapeador.paraResposta(repositorio.save(usuario));
     }
 
     @Transactional
-    public void excluir(Integer id, Integer authenticatedId, boolean admin) {
-        if (!admin && !id.equals(authenticatedId)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You may only delete your own account.");
+    public void excluirUsuario(Integer id, Integer idUsuarioAutenticado, boolean administrador) {
+        if (!administrador && !id.equals(idUsuarioAutenticado)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,
+                    "Você só pode excluir a sua própria conta.");
         }
-        Usuario usuario = repository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found."));
-        // Soft-delete to preserve foreign-key-linked feedback and loyalty history.
+
+        Usuario usuario = repositorio.buscarPorId(id);
+        if (usuario == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado.");
+        }
+
+        // Exclusão lógica para preservar o histórico de selos e feedbacks.
         usuario.setStatusUsuario(0);
         usuario.setAtualizadoEm(LocalDateTime.now());
-        repository.save(usuario);
+        repositorio.save(usuario);
     }
-
-    public record LoginResult(String token, UsuarioRespostaDTO usuario) {}
 }
