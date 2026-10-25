@@ -12,7 +12,7 @@ public class Codigo {
     @Column(name = "idCodigos")
     private Integer idCodigos;
 
-    @Column(length = 6)
+    @Column(length = 6, nullable = false, unique = true)
     private String codigo;
 
     private Integer statusScan;
