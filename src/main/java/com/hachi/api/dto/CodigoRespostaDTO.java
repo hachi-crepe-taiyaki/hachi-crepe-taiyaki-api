@@ -7,7 +7,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.math.BigDecimal;
 
 @Schema(name = "CodigoRespostaDTO", description = "Dados do código de fidelidade gerado.")
-@Schema(name = "CodigoRespostaDTO", description = "Dados do código de fidelidade gerado.")
 public class CodigoRespostaDTO {
     @Schema(description = "Identificador do registro do código.")
     @Schema(description = "Identificador do registro do código.")
