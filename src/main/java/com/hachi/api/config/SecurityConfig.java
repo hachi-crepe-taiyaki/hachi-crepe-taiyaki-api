@@ -4,6 +4,7 @@ import com.hachi.api.security.JwtAuthenticationFilter;
 import com.hachi.api.security.OriginValidationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
@@ -24,6 +25,20 @@ public class SecurityConfig {
     }
 
     @Bean
+    FilterRegistrationBean<JwtAuthenticationFilter> disableJwtServletRegistration(JwtAuthenticationFilter filter) {
+        FilterRegistrationBean<JwtAuthenticationFilter> registration = new FilterRegistrationBean<>(filter);
+        registration.setEnabled(false);
+        return registration;
+    }
+
+    @Bean
+    FilterRegistrationBean<OriginValidationFilter> disableOriginServletRegistration(OriginValidationFilter filter) {
+        FilterRegistrationBean<OriginValidationFilter> registration = new FilterRegistrationBean<>(filter);
+        registration.setEnabled(false);
+        return registration;
+    }
+
+    @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtFilter,
                                             OriginValidationFilter originFilter) throws Exception {
         return http
@@ -37,8 +52,8 @@ public class SecurityConfig {
                                 "/swagger-ui.html", "/v3/api-docs/**", "/error").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .anyRequest().authenticated())
-                .addFilterBefore(originFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(originFilter, JwtAuthenticationFilter.class)
                 .build();
     }
 }
