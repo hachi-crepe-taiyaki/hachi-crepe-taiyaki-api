@@ -90,7 +90,10 @@ public class UsuarioService {
         }
         Usuario usuario = repository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found."));
-        repository.delete(usuario);
+        // Soft-delete to preserve foreign-key-linked feedback and loyalty history.
+        usuario.setStatusUsuario(0);
+        usuario.setAtualizadoEm(LocalDateTime.now());
+        repository.save(usuario);
     }
 
     public record LoginResult(String token, UsuarioRespostaDTO usuario) {}
