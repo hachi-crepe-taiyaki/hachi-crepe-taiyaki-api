@@ -23,11 +23,14 @@ import java.time.Duration;
 public class UsuarioController {
     private final UsuarioService service;
     private final boolean secureCookie;
+    private final long jwtExpirationMinutes;
 
     public UsuarioController(UsuarioService service,
-                             @Value("${app.cookie.secure:false}") boolean secureCookie) {
+                             @Value("${app.cookie.secure:false}") boolean secureCookie,
+                             @Value("${app.jwt.expiration-minutes:60}") long jwtExpirationMinutes) {
         this.service = service;
         this.secureCookie = secureCookie;
+        this.jwtExpirationMinutes = jwtExpirationMinutes;
     }
 
     @PostMapping
@@ -39,7 +42,7 @@ public class UsuarioController {
     public ResponseEntity<UsuarioRespostaDTO> login(@Valid @RequestBody LoginDTO dto,
                                                      HttpServletResponse response) {
         UsuarioService.LoginResult result = service.login(dto);
-        response.addHeader("Set-Cookie", tokenCookie(result.token(), Duration.ofMinutes(60)).toString());
+        response.addHeader("Set-Cookie", tokenCookie(result.token(), Duration.ofMinutes(jwtExpirationMinutes)).toString());
         return ResponseEntity.ok(result.usuario());
     }
 
