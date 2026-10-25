@@ -1,11 +1,18 @@
 package com.hachi.api.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.math.BigDecimal;
 
+@Schema(name = "CodigoRespostaDTO", description = "Dados do código de fidelidade gerado.")
 public class CodigoRespostaDTO {
+    @Schema(description = "Identificador do registro do código.")
     private Integer idCodigos;
+    @Schema(description = "Código alfanumérico que o cliente apresenta para resgatar um selo.")
     private String codigo;
+    @Schema(description = "Estado de utilização do código conforme o sistema de fidelidade.")
     private Integer statusScan;
+    @Schema(description = "Valor da compra associado ao código, em reais.")
     private BigDecimal valor;
 
     public CodigoRespostaDTO() {}
