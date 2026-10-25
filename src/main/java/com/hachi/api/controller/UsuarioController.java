@@ -2,6 +2,7 @@ package com.hachi.api.controller;
 
 import com.hachi.api.config.AutenticacaoFilter;
 import com.hachi.api.config.GerenciadorTokenJwt;
+import com.hachi.api.dto.CodigoResgateDTO;
 import com.hachi.api.dto.LoginDTO;
 import com.hachi.api.dto.ResultadoLoginDTO;
 import com.hachi.api.dto.UsuarioAtualizacaoDTO;
@@ -59,12 +60,12 @@ public class UsuarioController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/{id}/resgatarSelo/{codigo}")
+    @PostMapping("/{id}/selos")
     public ResponseEntity<Void> resgatarSelo(@PathVariable Integer id,
-                                              @PathVariable String codigo,
+                                              @Valid @RequestBody CodigoResgateDTO dto,
                                               Authentication autenticacao) {
         Integer idAutenticado = obterIdAutenticado(autenticacao);
-        resgateSeloService.resgatarSelo(idAutenticado, id, codigo);
+        resgateSeloService.resgatarSelo(idAutenticado, id, dto.getCodigo());
         return ResponseEntity.noContent().build();
     }
 
