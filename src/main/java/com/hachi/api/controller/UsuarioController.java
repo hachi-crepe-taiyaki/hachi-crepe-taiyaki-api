@@ -8,6 +8,7 @@ import com.hachi.api.dto.UsuarioAtualizacaoDTO;
 import com.hachi.api.dto.UsuarioCadastroDTO;
 import com.hachi.api.dto.UsuarioRespostaDTO;
 import com.hachi.api.service.UsuarioService;
+import com.hachi.api.service.ResgateSeloService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,13 +25,16 @@ import java.time.Duration;
 @RequestMapping("/api/usuarios")
 public class UsuarioController {
     private final UsuarioService usuarioService;
+    private final ResgateSeloService resgateSeloService;
     private final boolean cookieSeguro;
     private final GerenciadorTokenJwt gerenciadorTokenJwt;
 
     public UsuarioController(UsuarioService usuarioService,
+                             ResgateSeloService resgateSeloService,
                              GerenciadorTokenJwt gerenciadorTokenJwt,
                              @Value("${app.cookie.secure:false}") boolean cookieSeguro) {
         this.usuarioService = usuarioService;
+        this.resgateSeloService = resgateSeloService;
         this.gerenciadorTokenJwt = gerenciadorTokenJwt;
         this.cookieSeguro = cookieSeguro;
     }
@@ -52,6 +56,15 @@ public class UsuarioController {
     @PostMapping("/logout")
     public ResponseEntity<Void> encerrarSessao(HttpServletResponse resposta) {
         resposta.addHeader("Set-Cookie", criarCookieToken("", Duration.ZERO).toString());
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{id}/resgatarSelo/{codigo}")
+    public ResponseEntity<Void> resgatarSelo(@PathVariable Integer id,
+                                              @PathVariable String codigo,
+                                              Authentication autenticacao) {
+        Integer idAutenticado = obterIdAutenticado(autenticacao);
+        resgateSeloService.resgatarSelo(idAutenticado, id, codigo);
         return ResponseEntity.noContent().build();
     }
 
