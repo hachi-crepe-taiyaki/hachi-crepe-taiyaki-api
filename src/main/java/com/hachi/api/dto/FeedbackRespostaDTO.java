@@ -1,12 +1,20 @@
 package com.hachi.api.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.time.LocalDateTime;
 
+@Schema(name = "FeedbackRespostaDTO", description = "Representação de um feedback já registrado.")
 public class FeedbackRespostaDTO {
+    @Schema(description = "Identificador único do feedback.")
     private Integer idFeedback;
+    @Schema(description = "Nota de avaliação de 0 a 5.")
     private Integer nota;
+    @Schema(description = "Comentário enviado pelo usuário.")
     private String comentario;
+    @Schema(description = "Data e hora em que o feedback foi registrado.")
     private LocalDateTime dataHora;
+    @Schema(description = "Identificador do usuário que enviou o feedback.")
     private Integer idUsuario;
 
     public FeedbackRespostaDTO() {}
