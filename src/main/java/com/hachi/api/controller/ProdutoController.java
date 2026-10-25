@@ -44,8 +44,8 @@ public class ProdutoController {
         return ResponseEntity.ok(produtoService.buscarProduto(id));
     }
 
-    @Operation(summary = "Cadastrar produto"
-    @SecurityRequirement(name = "cookieAuth"), description = "Cria um produto vinculado a uma categoria existente. Requer administrador autenticado. Nome, preço, disponibilidade e categoria são validados; descrição e URL da imagem são opcionais.")
+    @Operation(summary = "Cadastrar produto", description = "Cria um produto vinculado a uma categoria existente. Requer administrador autenticado. Nome, preço, disponibilidade e categoria são validados; descrição e URL da imagem são opcionais.")
+    @SecurityRequirement(name = "cookieAuth")
     @ApiResponses({@ApiResponse(responseCode = "201", description = "Produto criado."), @ApiResponse(responseCode = "400", description = "Dados inválidos ou categoria informada inválida."), @ApiResponse(responseCode = "401", description = "Usuário não autenticado."), @ApiResponse(responseCode = "403", description = "Usuário não é administrador.")})
     @PostMapping
     public ResponseEntity<ProdutoRespostaDTO> cadastrarProduto(
@@ -54,8 +54,8 @@ public class ProdutoController {
                 produtoService.cadastrarProduto(dto, obterIdAutenticado(autenticacao)));
     }
 
-    @Operation(summary = "Atualizar produto"
-    @SecurityRequirement(name = "cookieAuth"), description = "Atualiza os dados editáveis do produto identificado, incluindo sua categoria. Requer administrador autenticado.")
+    @Operation(summary = "Atualizar produto", description = "Atualiza os dados editáveis do produto identificado, incluindo sua categoria. Requer administrador autenticado.")
+    @SecurityRequirement(name = "cookieAuth")
     @ApiResponses({@ApiResponse(responseCode = "200", description = "Produto atualizado."), @ApiResponse(responseCode = "400", description = "Dados inválidos ou categoria informada inválida."), @ApiResponse(responseCode = "401", description = "Usuário não autenticado."), @ApiResponse(responseCode = "403", description = "Usuário não é administrador."), @ApiResponse(responseCode = "404", description = "Produto não encontrado.")})
     @PutMapping("/{id}")
     public ResponseEntity<ProdutoRespostaDTO> atualizarProduto(
@@ -65,8 +65,8 @@ public class ProdutoController {
                 produtoService.atualizarProduto(id, dto, obterIdAutenticado(autenticacao)));
     }
 
-    @Operation(summary = "Excluir produto"
-    @SecurityRequirement(name = "cookieAuth"), description = "Remove o produto identificado. Requer administrador autenticado.")
+    @Operation(summary = "Excluir produto", description = "Remove o produto identificado. Requer administrador autenticado.")
+    @SecurityRequirement(name = "cookieAuth")
     @ApiResponses({@ApiResponse(responseCode = "204", description = "Produto excluído."), @ApiResponse(responseCode = "401", description = "Usuário não autenticado."), @ApiResponse(responseCode = "403", description = "Usuário não é administrador."), @ApiResponse(responseCode = "404", description = "Produto não encontrado.")})
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> excluirProduto(@PathVariable Integer id, Authentication autenticacao) {
