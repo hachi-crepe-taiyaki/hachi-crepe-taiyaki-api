@@ -7,12 +7,10 @@ import java.time.LocalDateTime;
 @Table(name = "resgate_selo")
 public class ResgateSelo {
 
-    @Id
     @ManyToOne
     @JoinColumn(name = "codigos_idCodigos")
     private Codigo codigo;
 
-    @Id
     @ManyToOne
     @JoinColumn(name = "usuario_idUsuario")
     private Usuario usuario;
