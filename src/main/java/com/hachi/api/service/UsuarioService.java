@@ -34,7 +34,7 @@ public class UsuarioService {
 
     @Transactional
     public UsuarioRespostaDTO cadastrarUsuario(UsuarioCadastroDTO dto) {
-        if (repositorio.contarPorEmail(dto.getEmail().trim()) > 0) {
+        if (repositorio.countByEmailIgnoreCase(dto.getEmail().trim()) > 0) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Este e-mail já está cadastrado.");
         }
 
@@ -56,7 +56,7 @@ public class UsuarioService {
     }
 
     public ResultadoLoginDTO autenticarUsuario(LoginDTO dto) {
-        Usuario usuario = repositorio.buscarPorEmail(dto.getEmail().trim());
+        Usuario usuario = repositorio.findByEmailIgnoreCase(dto.getEmail().trim());
         if (usuario == null || !codificadorSenha.matches(dto.getSenha(), usuario.getSenha())
                 || (usuario.getStatusUsuario() != null && usuario.getStatusUsuario() != 1)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "E-mail ou senha inválidos.");
@@ -75,7 +75,7 @@ public class UsuarioService {
                     "Você só pode alterar os dados da sua própria conta.");
         }
 
-        Usuario usuario = repositorio.buscarPorId(id);
+        Usuario usuario = repositorio.findByIdUsuario(id);
         if (usuario == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado.");
         }
@@ -85,7 +85,7 @@ public class UsuarioService {
         if (dto.getEmail() != null && dto.getEmail().isBlank()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "O e-mail não pode ficar vazio.");
         }
-        if (dto.getEmail() != null && repositorio.contarPorEmailDeOutroUsuario(dto.getEmail().trim(), id) > 0) {
+        if (dto.getEmail() != null && repositorio.countByEmailIgnoreCaseAndIdUsuarioNot(dto.getEmail().trim(), id) > 0) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Este e-mail já está cadastrado.");
         }
 
@@ -111,7 +111,7 @@ public class UsuarioService {
                     "Você só pode excluir a sua própria conta.");
         }
 
-        Usuario usuario = repositorio.buscarPorId(id);
+        Usuario usuario = repositorio.findByIdUsuario(id);
         if (usuario == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado.");
         }
