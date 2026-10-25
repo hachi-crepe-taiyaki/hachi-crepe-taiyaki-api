@@ -79,6 +79,12 @@ public class UsuarioService {
         if (usuario == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado.");
         }
+        if (dto.getNome() != null && dto.getNome().isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "O nome não pode ficar vazio.");
+        }
+        if (dto.getEmail() != null && dto.getEmail().isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "O e-mail não pode ficar vazio.");
+        }
         if (dto.getEmail() != null && repositorio.contarPorEmailDeOutroUsuario(dto.getEmail().trim(), id) > 0) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Este e-mail já está cadastrado.");
         }
