@@ -1,17 +1,16 @@
 package com.hachi.api.config;
 
-import com.hachi.api.security.JwtAuthenticationFilter;
-import com.hachi.api.security.OriginValidationFilter;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -19,41 +18,55 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableMethodSecurity
 public class SecurityConfig {
     @Bean
-    OriginValidationFilter originValidationFilter(
-            @Value("${app.cors.allowed-origins:http://localhost:3000,http://localhost:5173,http://localhost:5500}") String origins) {
-        return new OriginValidationFilter(origins);
+    PasswordEncoder codificadorSenha() {
+        return new BCryptPasswordEncoder();
     }
 
     @Bean
-    FilterRegistrationBean<JwtAuthenticationFilter> disableJwtServletRegistration(JwtAuthenticationFilter filter) {
-        FilterRegistrationBean<JwtAuthenticationFilter> registration = new FilterRegistrationBean<>(filter);
-        registration.setEnabled(false);
-        return registration;
+    AutenticacaoFilter filtroAutenticacao(GerenciadorTokenJwt gerenciadorTokenJwt) {
+        return new AutenticacaoFilter(gerenciadorTokenJwt);
     }
 
     @Bean
-    FilterRegistrationBean<OriginValidationFilter> disableOriginServletRegistration(OriginValidationFilter filter) {
-        FilterRegistrationBean<OriginValidationFilter> registration = new FilterRegistrationBean<>(filter);
-        registration.setEnabled(false);
-        return registration;
+    ValidadorOrigemFilter filtroValidacaoOrigem(
+            @Value("${app.cors.allowed-origins:http://localhost:3000,http://localhost:5173,http://localhost:5500}") String origens) {
+        return new ValidadorOrigemFilter(origens);
     }
 
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtFilter,
-                                            OriginValidationFilter originFilter) throws Exception {
+    FilterRegistrationBean<AutenticacaoFilter> desativarRegistroServletAutenticacao(AutenticacaoFilter filtro) {
+        FilterRegistrationBean<AutenticacaoFilter> registro = new FilterRegistrationBean<>(filtro);
+        registro.setEnabled(false);
+        return registro;
+    }
+
+    @Bean
+    FilterRegistrationBean<ValidadorOrigemFilter> desativarRegistroServletOrigem(ValidadorOrigemFilter filtro) {
+        FilterRegistrationBean<ValidadorOrigemFilter> registro = new FilterRegistrationBean<>(filtro);
+        registro.setEnabled(false);
+        return registro;
+    }
+
+    @Bean
+    SecurityFilterChain cadeiaSeguranca(HttpSecurity http, AutenticacaoFilter filtroAutenticacao,
+                                        ValidadorOrigemFilter filtroOrigem) throws Exception {
         return http
                 .cors(Customizer.withDefaults())
+                // O filtro de origem protege requisições feitas por navegadores com cookies.
                 .csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(sessao -> sessao.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(auth -> auth
+                .exceptionHandling(configuracao -> configuracao.authenticationEntryPoint(
+                        (requisicao, resposta, excecao) -> resposta.sendError(401,
+                                "É necessário estar autenticado para acessar este recurso.")))
+                .authorizeHttpRequests(autorizacao -> autorizacao
                         .requestMatchers("/api/usuarios", "/api/usuarios/login", "/swagger-ui/**",
                                 "/swagger-ui.html", "/v3/api-docs/**", "/error").permitAll()
-                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
                         .anyRequest().authenticated())
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(originFilter, JwtAuthenticationFilter.class)
+                .addFilterBefore(filtroAutenticacao, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(filtroOrigem, AutenticacaoFilter.class)
                 .build();
     }
 }
