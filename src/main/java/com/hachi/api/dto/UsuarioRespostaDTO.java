@@ -1,20 +1,35 @@
 package com.hachi.api.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+@Schema(name = "UsuarioRespostaDTO", description = "Dados públicos da conta retornados pela API. A senha e seu hash nunca são incluídos.")
 public class UsuarioRespostaDTO {
+    @Schema(description = "Identificador único da conta.")
     private Integer idUsuario;
+    @Schema(description = "Nome do usuário.")
     private String nome;
+    @Schema(description = "E-mail cadastrado.")
     private String email;
+    @Schema(description = "Telefone cadastrado, quando informado.")
     private String telefone;
+    @Schema(description = "Data e hora de criação da conta.")
     private LocalDateTime criadoEm;
+    @Schema(description = "Data e hora da última atualização da conta.")
     private LocalDateTime atualizadoEm;
+    @Schema(description = "Status da conta: 1 ativa, 0 inativa.")
     private Integer statusUsuario;
+    @Schema(description = "Papel da conta: 0 cliente, 1 funcionário, 2 administrador.")
     private Integer funcao;
+    @Schema(description = "Data de nascimento no formato yyyy-MM-dd, quando informada.")
     private LocalDate dtNasc;
+    @Schema(description = "Cidade cadastrada.")
     private String cidade;
+    @Schema(description = "Região cadastrada.")
     private String regiao;
+    @Schema(description = "Quantidade atual de selos de fidelidade.")
     private Integer selos;
 
     public UsuarioRespostaDTO() {}

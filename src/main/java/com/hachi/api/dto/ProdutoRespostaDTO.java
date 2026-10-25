@@ -1,15 +1,27 @@
 package com.hachi.api.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+
 import java.math.BigDecimal;
 
+@Schema(name = "ProdutoRespostaDTO", description = "Representação de um produto do cardápio, incluindo sua categoria.")
 public class ProdutoRespostaDTO {
+    @Schema(description = "Identificador único do produto.")
     private Integer idProduto;
+    @Schema(description = "Nome do produto.")
     private String nome;
+    @Schema(description = "Descrição do produto.")
     private String descricao;
+    @Schema(description = "Preço do produto em reais.")
     private BigDecimal preco;
+    @Schema(description = "URL da imagem do produto, quando cadastrada.")
     private String imagemUrl;
+    @Schema(description = "Disponibilidade: 1 para disponível e 0 para indisponível.")
     private Integer disponivel;
+    @Schema(description = "Identificador da categoria associada.")
     private Integer idCategoria;
+    @Schema(description = "Nome da categoria associada.")
     private String nomeCategoria;
 
     public ProdutoRespostaDTO() {}

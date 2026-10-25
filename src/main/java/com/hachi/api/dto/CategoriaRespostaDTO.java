@@ -1,8 +1,15 @@
 package com.hachi.api.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+
+@Schema(name = "CategoriaRespostaDTO", description = "Representação de uma categoria retornada pela API.")
 public class CategoriaRespostaDTO {
+    @Schema(description = "Identificador único da categoria.")
     private Integer idCategoria;
+    @Schema(description = "Nome da categoria.")
     private String nome;
+    @Schema(description = "Descrição da categoria.")
     private String descricao;
 
     public CategoriaRespostaDTO() {}
