@@ -8,16 +8,19 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class ValidadorOrigemFilter extends OncePerRequestFilter {
-    private final Set<String> origensPermitidas;
+    private final Set<String> origensPermitidas = new HashSet<>();
 
     public ValidadorOrigemFilter(String origens) {
-        this.origensPermitidas = Arrays.stream(origens.split(","))
-                .map(String::trim).filter(origem -> !origem.isEmpty())
-                .collect(Collectors.toUnmodifiableSet());
+        for (String origem : Arrays.asList(origens.split(","))) {
+            String origemLimpa = origem.trim();
+            if (!origemLimpa.isEmpty()) {
+                this.origensPermitidas.add(origemLimpa);
+            }
+        }
     }
 
     @Override
