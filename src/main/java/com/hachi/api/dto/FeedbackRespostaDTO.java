@@ -7,7 +7,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
 
 @Schema(name = "FeedbackRespostaDTO", description = "Representação de um feedback já registrado.")
-@Schema(name = "FeedbackRespostaDTO", description = "Representação de um feedback já registrado.")
 public class FeedbackRespostaDTO {
     @Schema(description = "Identificador único do feedback.")
     @Schema(description = "Identificador único do feedback.")
