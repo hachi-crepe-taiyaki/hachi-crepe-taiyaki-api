@@ -11,7 +11,6 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 @Schema(name = "FeedbackCadastroDTO", description = "Dados enviados pelo usuário autenticado para registrar um feedback.")
-@Schema(name = "FeedbackCadastroDTO", description = "Dados enviados pelo usuário autenticado para registrar um feedback.")
 public class FeedbackCadastroDTO {
 
     @NotNull(message = "A nota é obrigatória.")
