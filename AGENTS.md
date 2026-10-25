@@ -9,7 +9,7 @@
 - Passwords are stored only as BCrypt hashes; never return password hashes in API responses.
 - Login returns a JWT in an HttpOnly cookie; logout expires that cookie.
 - Registration and login are public. Logout, profile updates, account deletion, and user listing require valid authentication.
-- User listing supports optional filters by email, telephone, birth date, city, region, and name. Email, telephone, and name use case-insensitive contains matching; birth date uses exact matching; city and region use case-insensitive exact matching. Multiple filters are combined with AND.
+- User listing supports optional filters by email, telephone, birth date, city, region, and name. Email, telephone, and name use case-insensitive contains matching; birth date uses exact matching; city and region use case-insensitive exact matching. Multiple filters are combined with AND. The optional filters are implemented with one repository `@Query`; normalize blank string filters to null before querying.
 - A user may update/delete their own account. An admin may manage other accounts.
 - JWT signing secret comes from environment configuration and must be long and unpredictable in production.
 - Production cookies must use Secure and HTTPS. CORS must use explicit trusted origins with credentials, never wildcard origins.
@@ -42,5 +42,5 @@
 - Name application methods in Portuguese and write user-facing validation and error messages in Portuguese.
 - Keep JWT/authentication configuration classes under `com.hachi.api.config`; keep OpenAPI configuration under `com.hachi.api.config.swagger`.
 - Use only the JJWT library and APIs/patterns from the provided `config.zip` for JWT operations (`Jwts`, `Claims`, `Decoders.BASE64`, `Keys.hmacShaKeyFor`, signed-claims parsing); do not add a different JWT library or alternative token implementation.
-- Repository queries must use Spring Data JPA derived method names; do not use `@Query` or `@Param` for application repository methods.
+- Prefer Spring Data JPA derived query methods for repository queries. An explicit `@Query` is allowed when a single query must support multiple independent optional filters that cannot be expressed cleanly as a derived method.
 - Keep the layered structure: controllers, DTO classes, mappers, repositories, and services.
