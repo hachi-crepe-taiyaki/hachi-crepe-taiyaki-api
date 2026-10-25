@@ -1,5 +1,7 @@
 package com.hachi.api.controller;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -26,7 +28,8 @@ public class FeedbackController {
         this.feedbackService = feedbackService;
     }
 
-    @Operation(summary = "Listar feedbacks", description = "Retorna feedbacks ordenados do mais recente para o mais antigo. Os filtros idUsuario, dataInicio e dataFim são opcionais; as datas usam o formato ISO yyyy-MM-dd e os limites são inclusivos. Se o usuário informado não existir, retorna 404; se dataInicio for posterior a dataFim, retorna 400. Requer autenticação.")
+    @Operation(summary = "Listar feedbacks"
+    @SecurityRequirement(name = "cookieAuth"), description = "Retorna feedbacks ordenados do mais recente para o mais antigo. Os filtros idUsuario, dataInicio e dataFim são opcionais; as datas usam o formato ISO yyyy-MM-dd e os limites são inclusivos. Se o usuário informado não existir, retorna 404; se dataInicio for posterior a dataFim, retorna 400. Requer autenticação.")
     @ApiResponses({@ApiResponse(responseCode = "200", description = "Lista de feedbacks retornada; pode estar vazia."), @ApiResponse(responseCode = "400", description = "Intervalo de datas inválido."), @ApiResponse(responseCode = "401", description = "Usuário não autenticado."), @ApiResponse(responseCode = "404", description = "Usuário informado não encontrado.")})
     @GetMapping
     public ResponseEntity<List<FeedbackRespostaDTO>> listarFeedbacks(
