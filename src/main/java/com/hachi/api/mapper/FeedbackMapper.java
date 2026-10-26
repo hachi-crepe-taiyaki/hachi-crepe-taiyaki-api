@@ -1,7 +1,7 @@
-package com.hachi.api.mapper;
+package com.hachi.api.Mapper;
 
 import com.hachi.api.Entity.Feedback;
-import com.hachi.api.dto.FeedbackRespostaDTO;
+import com.hachi.api.DTO.FeedbackRespostaDTO;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

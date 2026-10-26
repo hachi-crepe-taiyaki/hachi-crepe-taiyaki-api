@@ -1,7 +1,7 @@
-package com.hachi.api.mapper;
+package com.hachi.api.Mapper;
 
 import com.hachi.api.Entity.Codigo;
-import com.hachi.api.dto.CodigoRespostaDTO;
+import com.hachi.api.DTO.CodigoRespostaDTO;
 import org.springframework.stereotype.Component;
 
 @Component

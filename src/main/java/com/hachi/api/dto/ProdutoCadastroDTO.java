@@ -1,4 +1,4 @@
-package com.hachi.api.dto;
+package com.hachi.api.DTO;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 

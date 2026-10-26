@@ -8,9 +8,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
-import com.hachi.api.dto.CategoriaCadastroDTO;
-import com.hachi.api.dto.CategoriaRespostaDTO;
-import com.hachi.api.service.CategoriaService;
+import com.hachi.api.DTO.CategoriaCadastroDTO;
+import com.hachi.api.DTO.CategoriaRespostaDTO;
+import com.hachi.api.Service.CategoriaService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

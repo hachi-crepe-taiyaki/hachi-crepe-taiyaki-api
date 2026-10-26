@@ -1,14 +1,14 @@
-package com.hachi.api.service;
+package com.hachi.api.Service;
 
 import com.hachi.api.Entity.Usuario;
 import com.hachi.api.config.GerenciadorTokenJwt;
-import com.hachi.api.dto.LoginDTO;
-import com.hachi.api.dto.ResultadoLoginDTO;
-import com.hachi.api.dto.UsuarioAtualizacaoDTO;
-import com.hachi.api.dto.UsuarioCadastroDTO;
-import com.hachi.api.dto.UsuarioRespostaDTO;
-import com.hachi.api.mapper.UsuarioMapper;
-import com.hachi.api.repository.UsuarioRepository;
+import com.hachi.api.DTO.LoginDTO;
+import com.hachi.api.DTO.ResultadoLoginDTO;
+import com.hachi.api.DTO.UsuarioAtualizacaoDTO;
+import com.hachi.api.DTO.UsuarioCadastroDTO;
+import com.hachi.api.DTO.UsuarioRespostaDTO;
+import com.hachi.api.Mapper.UsuarioMapper;
+import com.hachi.api.Repository.UsuarioRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

@@ -1,7 +1,7 @@
-package com.hachi.api.mapper;
+package com.hachi.api.Mapper;
 
 import com.hachi.api.Entity.Usuario;
-import com.hachi.api.dto.UsuarioRespostaDTO;
+import com.hachi.api.DTO.UsuarioRespostaDTO;
 import org.springframework.stereotype.Component;
 
 @Component

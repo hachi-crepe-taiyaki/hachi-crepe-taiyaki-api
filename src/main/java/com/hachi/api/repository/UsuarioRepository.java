@@ -1,4 +1,4 @@
-package com.hachi.api.repository;
+package com.hachi.api.Repository;
 
 import com.hachi.api.Entity.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;

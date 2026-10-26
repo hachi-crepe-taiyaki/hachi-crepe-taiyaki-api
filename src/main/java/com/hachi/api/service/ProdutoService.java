@@ -1,11 +1,11 @@
-package com.hachi.api.service;
+package com.hachi.api.Service;
 
 import com.hachi.api.Entity.Categoria;
 import com.hachi.api.Entity.Produto;
-import com.hachi.api.dto.ProdutoCadastroDTO;
-import com.hachi.api.dto.ProdutoRespostaDTO;
-import com.hachi.api.repository.CategoriaRepository;
-import com.hachi.api.repository.ProdutoRepository;
+import com.hachi.api.DTO.ProdutoCadastroDTO;
+import com.hachi.api.DTO.ProdutoRespostaDTO;
+import com.hachi.api.Repository.CategoriaRepository;
+import com.hachi.api.Repository.ProdutoRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

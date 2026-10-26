@@ -1,6 +1,6 @@
 package com.hachi.api.controller;
 
-import com.hachi.api.dto.RespostaErroDTO;
+import com.hachi.api.DTO.RespostaErroDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;

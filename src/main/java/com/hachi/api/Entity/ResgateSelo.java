@@ -8,16 +8,16 @@ import java.time.LocalDateTime;
 public class ResgateSelo {
 
     @ManyToOne
-    @JoinColumn(name = "codigos_idCodigos")
+    @JoinColumn(name = "codigos_id_codigos")
     private Codigo codigo;
 
     @ManyToOne
-    @JoinColumn(name = "usuario_idUsuario")
+    @JoinColumn(name = "usuario_id_usuario")
     private Usuario usuario;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idResgate")
+    @Column(name = "id_resgate")
     private Integer idResgate;
 
     @Column(name = "data_hora")

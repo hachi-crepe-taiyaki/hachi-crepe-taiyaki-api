@@ -1,7 +1,7 @@
-package com.hachi.api.service;
+package com.hachi.api.Service;
 
 import com.hachi.api.Entity.Usuario;
-import com.hachi.api.repository.UsuarioRepository;
+import com.hachi.api.Repository.UsuarioRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

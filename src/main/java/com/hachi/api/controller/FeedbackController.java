@@ -8,8 +8,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
-import com.hachi.api.dto.FeedbackRespostaDTO;
-import com.hachi.api.service.FeedbackService;
+import com.hachi.api.DTO.FeedbackRespostaDTO;
+import com.hachi.api.Service.FeedbackService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

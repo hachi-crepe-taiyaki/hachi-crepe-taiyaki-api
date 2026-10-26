@@ -32,55 +32,55 @@ SELECT 'Salgados', 'Lanches salgados preparados diariamente.'
 WHERE NOT EXISTS (SELECT 1 FROM categoria WHERE LOWER(nome) = 'salgados');
 
 INSERT INTO produto (nome, descricao, preco, imagem_url, disponivel, fk_categoria)
-SELECT 'Espresso', 'Café espresso tradicional.', 6.00, NULL, 1, c.idCategoria
+SELECT 'Espresso', 'Café espresso tradicional.', 6.00, NULL, 1, c.id_categoria
 FROM categoria c
 WHERE LOWER(c.nome) = 'cafés'
   AND NOT EXISTS (SELECT 1 FROM produto WHERE LOWER(nome) = 'espresso');
 
 INSERT INTO produto (nome, descricao, preco, imagem_url, disponivel, fk_categoria)
-SELECT 'Cappuccino', 'Café com leite vaporizado e espuma.', 10.00, NULL, 1, c.idCategoria
+SELECT 'Cappuccino', 'Café com leite vaporizado e espuma.', 10.00, NULL, 1, c.id_categoria
 FROM categoria c
 WHERE LOWER(c.nome) = 'cafés'
   AND NOT EXISTS (SELECT 1 FROM produto WHERE LOWER(nome) = 'cappuccino');
 
 INSERT INTO produto (nome, descricao, preco, imagem_url, disponivel, fk_categoria)
-SELECT 'Café Gelado', 'Café gelado levemente adocicado.', 12.00, NULL, 1, c.idCategoria
+SELECT 'Café Gelado', 'Café gelado levemente adocicado.', 12.00, NULL, 1, c.id_categoria
 FROM categoria c
 WHERE LOWER(c.nome) = 'cafés'
   AND NOT EXISTS (SELECT 1 FROM produto WHERE LOWER(nome) = 'café gelado');
 
 INSERT INTO produto (nome, descricao, preco, imagem_url, disponivel, fk_categoria)
-SELECT 'Brownie', 'Brownie de chocolate.', 9.00, NULL, 1, c.idCategoria
+SELECT 'Brownie', 'Brownie de chocolate.', 9.00, NULL, 1, c.id_categoria
 FROM categoria c
 WHERE LOWER(c.nome) = 'doces'
   AND NOT EXISTS (SELECT 1 FROM produto WHERE LOWER(nome) = 'brownie');
 
 INSERT INTO produto (nome, descricao, preco, imagem_url, disponivel, fk_categoria)
-SELECT 'Cheesecake', 'Fatia de cheesecake cremosa.', 14.00, NULL, 1, c.idCategoria
+SELECT 'Cheesecake', 'Fatia de cheesecake cremosa.', 14.00, NULL, 1, c.id_categoria
 FROM categoria c
 WHERE LOWER(c.nome) = 'doces'
   AND NOT EXISTS (SELECT 1 FROM produto WHERE LOWER(nome) = 'cheesecake');
 
 INSERT INTO produto (nome, descricao, preco, imagem_url, disponivel, fk_categoria)
-SELECT 'Cookie', 'Cookie com gotas de chocolate.', 7.00, NULL, 1, c.idCategoria
+SELECT 'Cookie', 'Cookie com gotas de chocolate.', 7.00, NULL, 1, c.id_categoria
 FROM categoria c
 WHERE LOWER(c.nome) = 'doces'
   AND NOT EXISTS (SELECT 1 FROM produto WHERE LOWER(nome) = 'cookie');
 
 INSERT INTO produto (nome, descricao, preco, imagem_url, disponivel, fk_categoria)
-SELECT 'Pão de Queijo', 'Pão de queijo assado na hora.', 6.50, NULL, 1, c.idCategoria
+SELECT 'Pão de Queijo', 'Pão de queijo assado na hora.', 6.50, NULL, 1, c.id_categoria
 FROM categoria c
 WHERE LOWER(c.nome) = 'salgados'
   AND NOT EXISTS (SELECT 1 FROM produto WHERE LOWER(nome) = 'pão de queijo');
 
 INSERT INTO produto (nome, descricao, preco, imagem_url, disponivel, fk_categoria)
-SELECT 'Coxinha', 'Coxinha de frango.', 8.00, NULL, 1, c.idCategoria
+SELECT 'Coxinha', 'Coxinha de frango.', 8.00, NULL, 1, c.id_categoria
 FROM categoria c
 WHERE LOWER(c.nome) = 'salgados'
   AND NOT EXISTS (SELECT 1 FROM produto WHERE LOWER(nome) = 'coxinha');
 
 INSERT INTO produto (nome, descricao, preco, imagem_url, disponivel, fk_categoria)
-SELECT 'Misto Quente', 'Sanduíche de queijo e presunto.', 11.00, NULL, 1, c.idCategoria
+SELECT 'Misto Quente', 'Sanduíche de queijo e presunto.', 11.00, NULL, 1, c.id_categoria
 FROM categoria c
 WHERE LOWER(c.nome) = 'salgados'
   AND NOT EXISTS (SELECT 1 FROM produto WHERE LOWER(nome) = 'misto quente');

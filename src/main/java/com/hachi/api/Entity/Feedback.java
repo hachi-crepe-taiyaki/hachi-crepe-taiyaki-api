@@ -9,7 +9,7 @@ public class Feedback {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idFeedback")
+    @Column(name = "id_feedback")
     private Integer idFeedback;
 
     private Integer nota;

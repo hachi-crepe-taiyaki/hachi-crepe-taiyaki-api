@@ -9,14 +9,14 @@ public class ResgateItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idResgate")
+    @Column(name = "id_resgate")
     private Integer idResgate;
 
     @Column(name = "data_resgate")
     private LocalDateTime dataResgate;
 
     @ManyToOne
-    @JoinColumn(name = "usuario_idUsuario")
+    @JoinColumn(name = "usuario_id_usuario")
     private Usuario usuario;
 
     public ResgateItem() {}
